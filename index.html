@@ -93,13 +93,18 @@
   .panel h2 { font-size: 18px; margin-bottom: 4px; }
   .panel p.hint { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
 
-  .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-  .upload-box {
-    border: 1.5px dashed var(--muted-dim); border-radius: 12px; padding: 20px; text-align: center;
-    cursor: pointer; font-size: 13px; color: var(--muted); transition: border-color .2s;
+  .upload-zone {
+    border: 1.5px dashed var(--muted-dim); border-radius: 12px; padding: 22px; text-align: center;
+    cursor: pointer; font-size: 13px; color: var(--muted); transition: border-color .2s; margin-bottom: 14px;
   }
-  .upload-box:hover { border-color: var(--teal); }
-  .upload-box.filled { border-style: solid; border-color: var(--teal); color: var(--teal); }
+  .upload-zone:hover { border-color: var(--teal); }
+  .upload-zone.filled { border-style: solid; border-color: var(--teal); }
+  .upload-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .upload-chip {
+    display: flex; align-items: center; gap: 6px; background: var(--surface-raised);
+    border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--teal);
+  }
+  .upload-chip button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 13px; padding: 0; }
 
   .slider-row { margin: 14px 0; }
   .slider-row label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 6px; }
@@ -173,7 +178,6 @@
     .hero { grid-template-columns: 1fr; padding-top: 36px; }
     .pipeline { grid-template-columns: 1fr 1fr; }
     .accuracy-bar { grid-template-columns: 1fr; }
-    .upload-row { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -224,16 +228,11 @@
 
       <input class="field" id="product-link" placeholder="Link do produto (TikTok Shop)" />
 
-      <div class="upload-row">
-        <div class="upload-box" id="upload-commission" onclick="document.getElementById('file-commission').click()">
-          📎 Print da comissão (obrigatório)
-        </div>
-        <div class="upload-box" id="upload-product" onclick="document.getElementById('file-product').click()">
-          📎 Print da ficha do produto (opcional)
-        </div>
-        <input type="file" id="file-commission" accept="image/*" class="hidden" onchange="handleFile(this,'commission')">
-        <input type="file" id="file-product" accept="image/*" class="hidden" onchange="handleFile(this,'product')">
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-prints').click()">
+        📎 Sobe até 5 prints (comissão, ficha do produto, vendas — o que você tiver)
+        <div class="upload-chips" id="upload-chips"></div>
       </div>
+      <input type="file" id="file-prints" accept="image/*" multiple class="hidden" onchange="handleFiles(this)">
 
       <div class="slider-row">
         <label>Facilidade de demonstração ao vivo: <span id="demo-ease-value">3</span>/5 — isso não aparece em nenhum print, só você sabe</label>
@@ -308,7 +307,7 @@
   let session = null;
   let products = [];
   let weights = { commission: 1.4, rating: 1.2, ratio: 1.6, demo_ease: 1.3 };
-  let pendingFiles = { commission: null, product: null };
+  let pendingFiles = []; // até 5 arquivos
   let pendingExtracted = null;
   let outcomeTargetId = null;
 
@@ -404,12 +403,31 @@
   }
 
   // ---------------- FILE UPLOAD ----------------
-  function handleFile(input, kind) {
-    const file = input.files[0];
-    if (!file) return;
-    pendingFiles[kind] = file;
-    document.getElementById('upload-' + kind).classList.add('filled');
-    document.getElementById('upload-' + kind).textContent = '✓ ' + file.name;
+  function handleFiles(input) {
+    const errEl = document.getElementById('panel-error');
+    errEl.textContent = "";
+    const incoming = Array.from(input.files);
+    if (pendingFiles.length + incoming.length > 5) {
+      errEl.textContent = "Máximo de 5 prints por análise.";
+      incoming.splice(5 - pendingFiles.length);
+    }
+    pendingFiles = pendingFiles.concat(incoming);
+    input.value = ""; // permite selecionar o mesmo arquivo de novo depois de remover
+    renderUploadChips();
+  }
+
+  function removeFile(index) {
+    pendingFiles.splice(index, 1);
+    renderUploadChips();
+  }
+
+  function renderUploadChips() {
+    const zone = document.getElementById('upload-zone');
+    const chipsEl = document.getElementById('upload-chips');
+    zone.classList.toggle('filled', pendingFiles.length > 0);
+    chipsEl.innerHTML = pendingFiles.map((f, i) =>
+      `<span class="upload-chip">${f.name} <button onclick="event.stopPropagation(); removeFile(${i})">✕</button></span>`
+    ).join('');
   }
 
   function fileToBase64(file) {
@@ -425,7 +443,7 @@
   async function analyzeProduct() {
     const errEl = document.getElementById('panel-error');
     errEl.textContent = "";
-    if (!pendingFiles.commission) { errEl.textContent = "Sobe pelo menos o print da comissão."; return; }
+    if (!pendingFiles.length) { errEl.textContent = "Sobe pelo menos 1 print."; return; }
 
     const btn = document.getElementById('analyze-btn');
     btn.disabled = true;
@@ -433,8 +451,9 @@
 
     try {
       const images = [];
-      images.push({ base64: await fileToBase64(pendingFiles.commission), mediaType: pendingFiles.commission.type });
-      if (pendingFiles.product) images.push({ base64: await fileToBase64(pendingFiles.product), mediaType: pendingFiles.product.type });
+      for (const file of pendingFiles) {
+        images.push({ base64: await fileToBase64(file), mediaType: file.type });
+      }
 
       const productLink = document.getElementById('product-link').value.trim();
 
@@ -509,14 +528,10 @@
     document.getElementById('product-link').value = '';
     document.getElementById('demo-ease').value = 3;
     document.getElementById('demo-ease-value').textContent = 3;
-    pendingFiles = { commission: null, product: null };
+    pendingFiles = [];
     pendingExtracted = null;
-    ['commission', 'product'].forEach(kind => {
-      const box = document.getElementById('upload-' + kind);
-      box.classList.remove('filled');
-      box.textContent = kind === 'commission' ? '📎 Print da comissão (obrigatório)' : '📎 Print da ficha do produto (opcional)';
-      document.getElementById('file-' + kind).value = '';
-    });
+    document.getElementById('file-prints').value = '';
+    renderUploadChips();
   }
 
   // ---------------- PIPELINE RENDER ----------------
