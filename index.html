@@ -281,6 +281,45 @@
 
   footer { text-align: center; padding: 26px; font-size: 12px; color: var(--muted-dim); }
 
+
+
+  /* ---------- NAVEGAÇÃO POR ABAS ---------- */
+  .tab-page { display: none; animation: tabFade .24s ease; }
+  .tab-page.active { display: block; }
+  @keyframes tabFade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+  .page-intro { padding: 42px 32px 24px; }
+  .page-intro .eyebrow { margin-bottom: 10px; }
+  .page-intro h1 { font-size: 32px; line-height: 1.15; margin-bottom: 10px; }
+  .page-intro p { max-width: 720px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+  .dashboard-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 0 32px 32px; }
+  .dashboard-card {
+    min-height: 190px; padding: 22px; border-radius: 16px; cursor: pointer; position: relative; overflow: hidden;
+    background: linear-gradient(155deg, rgba(34,211,238,.08), rgba(11,15,32,.94));
+    border: 1px solid rgba(34,211,238,.18); transition: .2s ease;
+  }
+  .dashboard-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,.55); box-shadow: 0 18px 45px rgba(0,0,0,.24); }
+  .dashboard-card::after { content:''; position:absolute; width:160px; height:160px; border-radius:50%; right:-65px; bottom:-80px; background:rgba(34,211,238,.08); filter:blur(2px); }
+  .dashboard-card .d-icon { width: 42px; height: 42px; display:flex; align-items:center; justify-content:center; border-radius:12px; color:var(--cyan); background:rgba(34,211,238,.10); border:1px solid rgba(34,211,238,.2); margin-bottom:18px; }
+  .dashboard-card .d-icon svg { width:22px; height:22px; }
+  .dashboard-card h3 { font-size:16px; margin-bottom:8px; }
+  .dashboard-card p { font-size:12px; line-height:1.55; color:var(--muted); max-width:290px; }
+  .dashboard-card .d-link { position:absolute; left:22px; bottom:20px; color:var(--cyan); font-size:12px; font-weight:700; }
+
+  .coming-shell { padding: 0 32px 50px; }
+  .coming-card {
+    min-height: 430px; border: 1px solid rgba(34,211,238,.18); border-radius: 18px; padding: 42px;
+    background: radial-gradient(circle at 70% 35%, rgba(34,211,238,.12), transparent 36%), linear-gradient(155deg, rgba(34,211,238,.04), rgba(11,15,32,.96));
+    display:flex; align-items:center; justify-content:space-between; gap:40px; overflow:hidden;
+  }
+  .coming-copy { max-width:560px; }
+  .coming-badge { display:inline-flex; gap:7px; align-items:center; padding:7px 11px; border-radius:100px; color:var(--cyan); background:rgba(34,211,238,.08); border:1px solid rgba(34,211,238,.2); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:18px; }
+  .coming-copy h2 { font-size:30px; line-height:1.15; margin-bottom:14px; }
+  .coming-copy p { color:var(--muted); font-size:14px; line-height:1.7; }
+  .coming-visual { width:280px; height:280px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1px solid rgba(34,211,238,.2); box-shadow: inset 0 0 70px rgba(34,211,238,.08), 0 0 70px rgba(34,211,238,.08); }
+  .coming-visual svg { width:125px; height:125px; color:var(--cyan); filter:drop-shadow(0 0 18px rgba(34,211,238,.5)); }
+
   @media (max-width: 1000px) {
     .app-shell { grid-template-columns: 1fr; }
     .sidebar { flex-direction: row; flex-wrap: wrap; align-items: center; padding: 16px 20px; }
@@ -290,6 +329,9 @@
     .brain-stage { height: 180px; }
     .pipeline { grid-template-columns: 1fr 1fr; }
     .accuracy-bar { grid-template-columns: 1fr; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .coming-card { flex-direction: column; align-items: flex-start; }
+    .coming-visual { width: 210px; height: 210px; align-self: center; }
   }
 </style>
 </head>
@@ -326,29 +368,21 @@
     </div>
 
     <nav class="sidebar-nav">
-      <button class="nav-item active" data-target="section-dashboard">
+      <button class="nav-item active" data-tab="tab-dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10"/></svg>
         Dashboard
       </button>
-      <button class="nav-item" data-target="section-add">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
-        Novo candidato
+      <button class="nav-item" data-tab="tab-product-tests">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6l1 3h3v15H5V6h3l1-3Z"/><path d="M9 12h6M9 16h4"/></svg>
+        Testes de Produto
       </button>
-      <button class="nav-item" data-target="section-pipeline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>
-        Pipeline de teste
+      <button class="nav-item" data-tab="tab-script-generator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+        Geração de Roteiro
       </button>
-      <button class="nav-item" data-target="section-history">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-        Histórico
-      </button>
-      <button class="nav-item" data-target="section-insight">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M6 19V9l4-4 4 4v10M14 19v-6l4-3v9"/></svg>
-        Insights
-      </button>
-      <button class="nav-item" data-target="">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
-        Configurações
+      <button class="nav-item" data-tab="tab-hot-products">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c4 0 7-3 7-7 0-5-4-7-4-12-4 2-8 6-8 12 0 4 2 7 5 7Z"/><path d="M12 22c-2 0-3-2-3-4 0-2 1-4 3-6 0 3 3 4 3 7 0 2-1 3-3 3Z"/></svg>
+        Produtos Mais Quentes
       </button>
     </nav>
 
@@ -379,7 +413,36 @@
       <button class="logout-btn" onclick="handleLogout()">Sair</button>
     </div>
 
-    <section class="hero" id="section-dashboard">
+    <section class="tab-page active" id="tab-dashboard">
+      <div class="page-intro">
+        <div class="eyebrow">Central Scout Live</div>
+        <h1>Seu cérebro estratégico para <span class="cyan-text">vender em live.</span></h1>
+        <p>Escolha uma área abaixo. Cada função funciona como um módulo separado, sem rolagem automática entre as partes da plataforma.</p>
+      </div>
+      <div class="dashboard-grid">
+        <article class="dashboard-card" onclick="openTab('tab-product-tests')">
+          <div class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6l1 3h3v15H5V6h3l1-3Z"/><path d="M9 12h6M9 16h4"/></svg></div>
+          <h3>Testes de Produto</h3>
+          <p>Analise prints, calcule prioridade, organize o pipeline e registre os resultados reais das suas lives.</p>
+          <span class="d-link">Abrir módulo →</span>
+        </article>
+        <article class="dashboard-card" onclick="openTab('tab-script-generator')">
+          <div class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></div>
+          <h3>Geração de Roteiro</h3>
+          <p>Área reservada para criar roteiros estratégicos com base no produto, público, benefícios e dinâmica da live.</p>
+          <span class="d-link">Abrir módulo →</span>
+        </article>
+        <article class="dashboard-card" onclick="openTab('tab-hot-products')">
+          <div class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c4 0 7-3 7-7 0-5-4-7-4-12-4 2-8 6-8 12 0 4 2 7 5 7Z"/></svg></div>
+          <h3>Produtos Mais Quentes</h3>
+          <p>Área reservada para visualizar tendências, oportunidades e produtos com maior potencial no momento.</p>
+          <span class="d-link">Abrir módulo →</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-page" id="tab-product-tests">
+    <section class="hero" id="section-product-tests">
       <div>
         <div class="eyebrow">Scout IA</div>
         <h1>Pare de arriscar produto. <span class="cyan-text">Comece a escalar.</span></h1>
@@ -523,6 +586,31 @@
       </div>
       <div class="bars" id="accuracy-bars"></div>
     </div>
+    </section>
+
+    <section class="tab-page" id="tab-script-generator">
+      <div class="page-intro">
+        <div class="eyebrow">Módulo Scout</div>
+        <h1>Geração de <span class="cyan-text">Roteiro</span></h1>
+        <p>Esta aba já está separada e pronta para receber a função de criação de roteiro sem interferir no módulo de testes de produto.</p>
+      </div>
+      <div class="coming-shell"><div class="coming-card">
+        <div class="coming-copy"><div class="coming-badge">Em desenvolvimento</div><h2>Transforme a análise do produto em uma live que vende.</h2><p>A estrutura desta página está pronta. Aqui poderão entrar campos de produto, tom de voz, duração, gatilhos, geração por blocos e exportação do roteiro.</p></div>
+        <div class="coming-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v5h5M8 12h8M8 16h6"/></svg></div>
+      </div></div>
+    </section>
+
+    <section class="tab-page" id="tab-hot-products">
+      <div class="page-intro">
+        <div class="eyebrow">Radar de oportunidades</div>
+        <h1>Os Produtos Mais Quentes <span class="cyan-text">do Momento</span></h1>
+        <p>Esta aba está pronta para receber ranking, tendências, categorias em alta e sinais de oportunidade para live shop.</p>
+      </div>
+      <div class="coming-shell"><div class="coming-card">
+        <div class="coming-copy"><div class="coming-badge">Em desenvolvimento</div><h2>Descubra onde está o movimento antes de todo mundo.</h2><p>A estrutura desta página está isolada do restante da ferramenta. Depois, podemos conectar uma fonte de dados e montar cards com produtos, tendência, comissão, vendas e nível de oportunidade.</p></div>
+        <div class="coming-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22c4 0 7-3 7-7 0-5-4-7-4-12-4 2-8 6-8 12 0 4 2 7 5 7Z"/><path d="M12 22c-2 0-3-2-3-4 0-2 1-4 3-6 0 3 3 4 3 7 0 2-1 3-3 3Z"/></svg></div>
+      </div></div>
+    </section>
   </main>
 </div>
 
@@ -1102,17 +1190,22 @@
 </script>
 
 <script>
-  // navegação lateral: rola até a seção correspondente
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      const targetId = item.getAttribute('data-target');
-      if (targetId) {
-        const el = document.getElementById(targetId);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+  // Navegação lateral por abas reais: mostra somente o módulo selecionado.
+  function openTab(tabId) {
+    document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
+    document.querySelectorAll('.nav-item[data-tab]').forEach(item => item.classList.remove('active'));
+
+    const page = document.getElementById(tabId);
+    const nav = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+    if (page) page.classList.add('active');
+    if (nav) nav.classList.add('active');
+
+    document.querySelector('.main-content')?.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
+    item.addEventListener('click', () => openTab(item.dataset.tab));
   });
 </script>
 
