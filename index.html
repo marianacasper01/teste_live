@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scout</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+  :root {
+    --ink: #0D0F14;
+    --surface: #181B21;
+    --surface-raised: #20242C;
+    --line: #2C3038;
+    --gold: #E8B84B;
+    --teal: #3EC6E0;
+    --red: #FF5C5C;
+    --text: #F0EEE8;
+    --muted: #8A8F9A;
+    --muted-dim: #4B505A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--ink); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+  .serif { font-family: 'Fraunces', serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .hidden { display: none !important; }
+
+  /* ---------- AUTH SCREEN ---------- */
+  #auth-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .auth-box {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 40px; width: 100%; max-width: 380px;
+  }
+  .auth-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+  .auth-logo .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); }
+  .auth-logo span { font-size: 20px; font-weight: 600; }
+  .auth-title { font-size: 22px; margin-bottom: 6px; }
+  .auth-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .field {
+    width: 100%; background: var(--surface-raised); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; font-size: 14px; color: var(--text); margin-bottom: 10px; outline: none;
+  }
+  .field:focus { border-color: var(--teal); }
+  .btn-gold {
+    width: 100%; background: var(--gold); color: var(--ink); border: none; font-weight: 600;
+    font-size: 14px; padding: 13px; border-radius: 10px; cursor: pointer; margin-top: 6px;
+  }
+  .btn-gold:disabled { opacity: 0.5; cursor: wait; }
+  .auth-toggle { text-align: center; font-size: 13px; color: var(--muted); margin-top: 16px; cursor: pointer; }
+  .auth-toggle span { color: var(--teal); }
+  .auth-error { font-size: 13px; color: var(--red); margin-top: 10px; min-height: 18px; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 32px; border-bottom: 1px solid var(--line);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); }
+  .logo span { font-size: 18px; font-weight: 600; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .accuracy-pill {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gold);
+    background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.3);
+    padding: 6px 12px; border-radius: 100px;
+  }
+  .logout-btn { background: none; border: 1px solid var(--line); color: var(--muted); font-size: 12px; padding: 7px 14px; border-radius: 8px; cursor: pointer; }
+  .logout-btn:hover { color: var(--text); border-color: var(--muted-dim); }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- HERO / INSIGHT ---------- */
+  .hero {
+    display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; padding: 56px 32px 48px; align-items: start;
+  }
+  .hero h1 { font-size: 38px; line-height: 1.15; margin-bottom: 14px; font-weight: 600; }
+  .hero p.sub { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 400px; }
+
+  .insight-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px;
+    border-left: 3px solid var(--gold);
+  }
+  .insight-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 12px; }
+  .insight-text { font-family: 'Fraunces', serif; font-size: 18px; line-height: 1.5; color: var(--text); font-weight: 500; }
+  .insight-meta { font-size: 12px; color: var(--muted-dim); margin-top: 14px; }
+
+  /* ---------- ADD PANEL ---------- */
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 30px; margin: 0 32px 40px; }
+  .panel h2 { font-size: 18px; margin-bottom: 4px; }
+  .panel p.hint { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .upload-box {
+    border: 1.5px dashed var(--muted-dim); border-radius: 12px; padding: 20px; text-align: center;
+    cursor: pointer; font-size: 13px; color: var(--muted); transition: border-color .2s;
+  }
+  .upload-box:hover { border-color: var(--teal); }
+  .upload-box.filled { border-style: solid; border-color: var(--teal); color: var(--teal); }
+
+  .slider-row { margin: 14px 0; }
+  .slider-row label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 6px; }
+  input[type="range"] { width: 100%; accent-color: var(--gold); }
+
+  .btn-primary {
+    background: var(--gold); color: var(--ink); border: none; font-weight: 600; font-size: 14px;
+    padding: 13px 22px; border-radius: 10px; cursor: pointer;
+  }
+  .btn-primary:disabled { opacity: 0.5; cursor: wait; }
+  .btn-ghost { background: none; border: 1px solid var(--line); color: var(--text); font-size: 13px; padding: 10px 16px; border-radius: 10px; cursor: pointer; }
+
+  .review-box { background: var(--surface-raised); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-top: 16px; }
+  .review-box .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .review-note { font-size: 12px; color: var(--muted-dim); margin-top: 8px; }
+
+  .panel-error { color: var(--red); font-size: 13px; margin-top: 10px; }
+
+  /* ---------- PIPELINE ---------- */
+  .section-label { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 32px 16px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+  .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 0 32px 60px; }
+  .stage { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-height: 200px; }
+  .stage-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .stage-name { font-size: 13px; font-weight: 600; }
+  .stage-count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); background: var(--surface-raised); padding: 2px 8px; border-radius: 100px; }
+  .empty-msg { font-size: 12px; color: var(--muted-dim); font-style: italic; text-align: center; padding: 24px 0; }
+
+  .card { background: var(--surface-raised); border: 1px solid var(--line); border-radius: 10px; padding: 13px; margin-bottom: 9px; }
+  .card-top { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .card-name { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .score-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; flex-shrink: 0; }
+  .score-high { background: rgba(232,184,75,0.15); color: var(--gold); }
+  .score-mid { background: rgba(62,198,224,0.15); color: var(--teal); }
+  .score-low { background: rgba(255,92,92,0.15); color: var(--red); }
+  .card-meta { display: flex; gap: 10px; font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .card-note { font-size: 11px; color: var(--muted-dim); font-style: italic; margin-top: 4px; }
+  .card-actions { display: flex; gap: 12px; }
+  .card-link { font-size: 11px; background: none; border: none; cursor: pointer; padding: 0; }
+  .link-go { color: var(--teal); }
+  .link-bad { color: var(--red); }
+  a.card-link-url { font-size: 11px; color: var(--muted); text-decoration: none; }
+
+  /* ---------- ACCURACY ---------- */
+  .accuracy-bar { margin: 0 32px 60px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 30px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: center; }
+  .accuracy-left .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .accuracy-left .value { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 600; }
+  .accuracy-left .of { color: var(--muted); font-size: 20px; }
+  .accuracy-left .desc { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .bars { display: flex; align-items: flex-end; gap: 5px; height: 80px; }
+  .bar { flex: 1; border-radius: 3px 3px 0 0; }
+  .bar.hit { background: linear-gradient(180deg, var(--gold), rgba(232,184,75,0.25)); }
+  .bar.miss { background: linear-gradient(180deg, rgba(255,92,92,0.6), rgba(255,92,92,0.15)); }
+
+  /* ---------- MODALS ---------- */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px; width: 100%; max-width: 400px; }
+  .modal-box h3 { font-size: 17px; margin-bottom: 6px; }
+  .modal-box p { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  textarea.field { resize: vertical; min-height: 70px; font-family: 'Inter', sans-serif; }
+  .outcome-actions { display: flex; gap: 10px; margin-top: 6px; }
+  .outcome-btn { flex: 1; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid; background: transparent; }
+  .outcome-btn.good { color: var(--gold); border-color: rgba(232,184,75,0.4); background: rgba(232,184,75,0.1); }
+  .outcome-btn.bad { color: var(--red); border-color: rgba(255,92,92,0.4); background: rgba(255,92,92,0.1); }
+
+  footer { text-align: center; padding: 26px; font-size: 12px; color: var(--muted-dim); border-top: 1px solid var(--line); }
+
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; padding-top: 36px; }
+    .pipeline { grid-template-columns: 1fr 1fr; }
+    .accuracy-bar { grid-template-columns: 1fr; }
+    .upload-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo"><span class="dot"></span><span class="serif">Scout</span></div>
+    <div class="auth-title serif" id="auth-title">Entrar</div>
+    <div class="auth-sub" id="auth-sub">Seus testes, seus dados — ninguém mais vê.</div>
+    <input class="field" id="auth-email" type="email" placeholder="E-mail" autocomplete="email" />
+    <input class="field" id="auth-password" type="password" placeholder="Senha" autocomplete="current-password" />
+    <button class="btn-gold" id="auth-submit" onclick="handleAuth()">Entrar</button>
+    <div class="auth-error" id="auth-error"></div>
+    <div class="auth-toggle" onclick="toggleAuthMode()">
+      <span id="auth-toggle-text">Não tem conta? <span>Criar conta</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+  <nav>
+    <div class="logo"><span class="dot"></span><span class="serif">Scout</span></div>
+    <div class="nav-right">
+      <div class="accuracy-pill mono" id="nav-accuracy">— / —</div>
+      <button class="logout-btn" onclick="handleLogout()">Sair</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <h1 class="serif">Clareza antes de gastar uma live.</h1>
+        <p class="sub">Manda o print da comissão, ela lê os dados, calcula a prioridade e aprende com cada resultado que você registra.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-label">Insight da Scout</div>
+        <div class="insight-text" id="insight-text">Carregando...</div>
+        <div class="insight-meta" id="insight-meta"></div>
+      </div>
+    </section>
+
+    <div class="panel">
+      <h2>Novo candidato</h2>
+      <p class="hint">Link do produto + print da comissão. Se tiver, manda o print da ficha do produto também — dá mais precisão.</p>
+
+      <input class="field" id="product-link" placeholder="Link do produto (TikTok Shop)" />
+
+      <div class="upload-row">
+        <div class="upload-box" id="upload-commission" onclick="document.getElementById('file-commission').click()">
+          📎 Print da comissão (obrigatório)
+        </div>
+        <div class="upload-box" id="upload-product" onclick="document.getElementById('file-product').click()">
+          📎 Print da ficha do produto (opcional)
+        </div>
+        <input type="file" id="file-commission" accept="image/*" class="hidden" onchange="handleFile(this,'commission')">
+        <input type="file" id="file-product" accept="image/*" class="hidden" onchange="handleFile(this,'product')">
+      </div>
+
+      <div class="slider-row">
+        <label>Facilidade de demonstração ao vivo: <span id="demo-ease-value">3</span>/5 — isso não aparece em nenhum print, só você sabe</label>
+        <input type="range" min="1" max="5" value="3" id="demo-ease" oninput="document.getElementById('demo-ease-value').textContent=this.value">
+      </div>
+
+      <button class="btn-primary" id="analyze-btn" onclick="analyzeProduct()">⚡ Analisar produto</button>
+      <div class="panel-error" id="panel-error"></div>
+
+      <div class="review-box hidden" id="review-box">
+        <div class="field-row">
+          <input class="field" id="rv-name" placeholder="Nome">
+          <input class="field" id="rv-commission" placeholder="Comissão %" type="number">
+        </div>
+        <div class="field-row">
+          <input class="field" id="rv-rating" placeholder="Nota (1-5)" type="number" step="0.1">
+          <input class="field" id="rv-ratio" placeholder="Vídeo/Live" type="number" step="0.1">
+        </div>
+        <div class="review-note">Confira os dados que a Scout leu do print. Corrige aqui se algo saiu errado antes de salvar.</div>
+        <div style="display:flex; gap:10px; margin-top:14px;">
+          <button class="btn-primary" onclick="saveProduct()">Salvar no pipeline</button>
+          <button class="btn-ghost" onclick="cancelReview()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Pipeline de teste</div>
+    <div class="pipeline" id="pipeline">
+      <div class="stage"><div class="stage-head"><div class="stage-name">A testar</div><div class="stage-count mono" id="count-a_testar">0</div></div><div id="stage-a_testar"></div></div>
+      <div class="stage"><div class="stage-head"><div class="stage-name">Em mini-live</div><div class="stage-count mono" id="count-em_teste">0</div></div><div id="stage-em_teste"></div></div>
+      <div class="stage"><div class="stage-head"><div class="stage-name">Aprovados</div><div class="stage-count mono" id="count-aprovado">0</div></div><div id="stage-aprovado"></div></div>
+      <div class="stage"><div class="stage-head"><div class="stage-name">Descartados</div><div class="stage-count mono" id="count-descartado">0</div></div><div id="stage-descartado"></div></div>
+    </div>
+
+    <div class="accuracy-bar">
+      <div class="accuracy-left">
+        <div class="label">Taxa de acerto · últimos 20 testes</div>
+        <div class="value serif" id="accuracy-value">0<span class="of"> / 0</span></div>
+        <div class="desc" id="accuracy-desc">Registre resultados pra começar a ver sua taxa de acerto subir.</div>
+      </div>
+      <div class="bars" id="accuracy-bars"></div>
+    </div>
+  </div>
+
+  <footer>Scout · construído pra encontrar o próximo produto, não o próximo palpite</footer>
+</div>
+
+<!-- OUTCOME MODAL -->
+<div class="modal-overlay" id="outcome-modal">
+  <div class="modal-box">
+    <h3>Como foi de verdade?</h3>
+    <p>Uma frase curta sobre o motivo ajuda a Scout a entender o padrão, não só o número.</p>
+    <textarea class="field" id="outcome-note" placeholder="Ex: vendeu bem depois que mostrei o antes/depois"></textarea>
+    <div class="outcome-actions">
+      <button class="outcome-btn good" onclick="confirmOutcome(true)">Deu resultado bom</button>
+      <button class="outcome-btn bad" onclick="confirmOutcome(false)">Não vingou</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // CONFIGURAÇÃO — preencha com o SEU projeto Supabase novo
+  // (Project Settings → API)
+  // ============================================================
+  const SUPABASE_URL = "COLE_AQUI_SUA_SUPABASE_URL";
+  const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_ANON_KEY";
+
+  const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let authMode = "login"; // "login" | "signup"
+  let session = null;
+  let products = [];
+  let weights = { commission: 1.4, rating: 1.2, ratio: 1.6, demo_ease: 1.3 };
+  let pendingFiles = { commission: null, product: null };
+  let pendingExtracted = null;
+  let outcomeTargetId = null;
+
+  // ---------------- AUTH ----------------
+  function toggleAuthMode() {
+    authMode = authMode === "login" ? "signup" : "login";
+    document.getElementById('auth-title').textContent = authMode === "login" ? "Entrar" : "Criar conta";
+    document.getElementById('auth-submit').textContent = authMode === "login" ? "Entrar" : "Criar conta";
+    document.getElementById('auth-toggle-text').innerHTML = authMode === "login"
+      ? 'Não tem conta? <span>Criar conta</span>'
+      : 'Já tem conta? <span>Entrar</span>';
+    document.getElementById('auth-error').textContent = "";
+  }
+
+  async function handleAuth() {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const errEl = document.getElementById('auth-error');
+    const btn = document.getElementById('auth-submit');
+    errEl.textContent = "";
+    if (!email || !password) { errEl.textContent = "Preenche e-mail e senha."; return; }
+
+    btn.disabled = true;
+    const fn = authMode === "login" ? supa.auth.signInWithPassword({ email, password }) : supa.auth.signUp({ email, password });
+    const { data, error } = await fn;
+    btn.disabled = false;
+
+    if (error) { errEl.textContent = error.message; return; }
+    if (authMode === "signup" && !data.session) {
+      errEl.style.color = "var(--teal)";
+      errEl.textContent = "Conta criada. Confirme seu e-mail pra entrar (se a confirmação estiver ativada no projeto).";
+      return;
+    }
+    session = data.session;
+    await enterApp();
+  }
+
+  async function handleLogout() {
+    await supa.auth.signOut();
+    session = null;
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('auth-screen').classList.remove('hidden');
+  }
+
+  async function enterApp() {
+    document.getElementById('auth-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    await loadWeights();
+    await loadProducts();
+    renderBoard();
+    updateAccuracy();
+    refreshInsight();
+  }
+
+  // ---------------- DATA LOADING ----------------
+  async function loadWeights() {
+    const { data } = await supa.from('scout_weights').select('*').maybeSingle();
+    if (data) {
+      weights = { commission: data.commission, rating: data.rating, ratio: data.ratio, demo_ease: data.demo_ease };
+    } else {
+      const userId = session.user.id;
+      await supa.from('scout_weights').insert({ user_id: userId, ...weights });
+    }
+  }
+
+  async function loadProducts() {
+    const { data, error } = await supa.from('scout_products').select('*').order('created_at', { ascending: false });
+    if (error) { console.error(error); products = []; return; }
+    products = data || [];
+  }
+
+  // ---------------- SCORING ----------------
+  function normalize(key, value) {
+    if (key === 'commission') return Math.min(value, 30) / 30;
+    if (key === 'rating') return Math.min(Math.max(value - 3.5, 0), 1.5) / 1.5;
+    if (key === 'ratio') return Math.min(value, 4) / 4;
+    if (key === 'demo_ease') return value / 5;
+    return 0;
+  }
+  function calcScore(p) {
+    let total = 0, max = 0;
+    for (const key in weights) {
+      const n = normalize(key, p[key] || 0);
+      total += n * weights[key];
+      max += weights[key];
+    }
+    return Math.round((total / max) * 100) / 10;
+  }
+  function scoreClass(score) {
+    if (score >= 7) return 'score-high';
+    if (score >= 5) return 'score-mid';
+    return 'score-low';
+  }
+
+  // ---------------- FILE UPLOAD ----------------
+  function handleFile(input, kind) {
+    const file = input.files[0];
+    if (!file) return;
+    pendingFiles[kind] = file;
+    document.getElementById('upload-' + kind).classList.add('filled');
+    document.getElementById('upload-' + kind).textContent = '✓ ' + file.name;
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ---------------- ANALYZE (calls Edge Function) ----------------
+  async function analyzeProduct() {
+    const errEl = document.getElementById('panel-error');
+    errEl.textContent = "";
+    if (!pendingFiles.commission) { errEl.textContent = "Sobe pelo menos o print da comissão."; return; }
+
+    const btn = document.getElementById('analyze-btn');
+    btn.disabled = true;
+    btn.textContent = "Analisando...";
+
+    try {
+      const images = [];
+      images.push({ base64: await fileToBase64(pendingFiles.commission), mediaType: pendingFiles.commission.type });
+      if (pendingFiles.product) images.push({ base64: await fileToBase64(pendingFiles.product), mediaType: pendingFiles.product.type });
+
+      const productLink = document.getElementById('product-link').value.trim();
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/scout-analyze`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ images, productLink }),
+      });
+      const data = await res.json();
+      if (data.error) { errEl.textContent = data.error; return; }
+
+      const videoRevenue = data.video_revenue || 0;
+      const liveRevenue = data.live_revenue || 0;
+      const ratio = liveRevenue > 0 ? Math.round((videoRevenue / liveRevenue) * 10) / 10 : (videoRevenue > 0 ? 4 : 0);
+
+      pendingExtracted = {
+        name: data.name || '',
+        commission: data.commission_percent || 0,
+        rating: data.rating || 0,
+        ratio,
+        demo_ease: parseInt(document.getElementById('demo-ease').value),
+        product_link: productLink,
+      };
+
+      document.getElementById('rv-name').value = pendingExtracted.name;
+      document.getElementById('rv-commission').value = pendingExtracted.commission;
+      document.getElementById('rv-rating').value = pendingExtracted.rating;
+      document.getElementById('rv-ratio').value = pendingExtracted.ratio;
+      document.getElementById('review-box').classList.remove('hidden');
+    } catch (err) {
+      errEl.textContent = "Erro ao analisar: " + err.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "⚡ Analisar produto";
+    }
+  }
+
+  function cancelReview() {
+    document.getElementById('review-box').classList.add('hidden');
+    pendingExtracted = null;
+  }
+
+  async function saveProduct() {
+    const p = {
+      name: document.getElementById('rv-name').value.trim() || 'Sem nome',
+      commission: parseFloat(document.getElementById('rv-commission').value) || 0,
+      rating: parseFloat(document.getElementById('rv-rating').value) || 0,
+      ratio: parseFloat(document.getElementById('rv-ratio').value) || 0,
+      demo_ease: pendingExtracted.demo_ease,
+      product_link: pendingExtracted.product_link,
+    };
+    const score = calcScore(p);
+
+    const { data, error } = await supa.from('scout_products').insert({
+      user_id: session.user.id,
+      name: p.name, commission: p.commission, rating: p.rating, ratio: p.ratio,
+      demo_ease: p.demo_ease, product_link: p.product_link, score, stage: 'a_testar',
+    }).select().single();
+
+    if (error) { document.getElementById('panel-error').textContent = error.message; return; }
+
+    products.unshift(data);
+    resetPanel();
+    renderBoard();
+  }
+
+  function resetPanel() {
+    document.getElementById('review-box').classList.add('hidden');
+    document.getElementById('product-link').value = '';
+    document.getElementById('demo-ease').value = 3;
+    document.getElementById('demo-ease-value').textContent = 3;
+    pendingFiles = { commission: null, product: null };
+    pendingExtracted = null;
+    ['commission', 'product'].forEach(kind => {
+      const box = document.getElementById('upload-' + kind);
+      box.classList.remove('filled');
+      box.textContent = kind === 'commission' ? '📎 Print da comissão (obrigatório)' : '📎 Print da ficha do produto (opcional)';
+      document.getElementById('file-' + kind).value = '';
+    });
+  }
+
+  // ---------------- PIPELINE RENDER ----------------
+  function renderBoard() {
+    const stages = ['a_testar', 'em_teste', 'aprovado', 'descartado'];
+    stages.forEach(stage => {
+      const container = document.getElementById('stage-' + stage);
+      const items = products.filter(p => p.stage === stage);
+      document.getElementById('count-' + stage).textContent = items.length;
+      container.innerHTML = items.length ? items.map(cardHtml).join('') : '<div class="empty-msg">nada aqui ainda</div>';
+    });
+  }
+
+  function cardHtml(p) {
+    let actions = '';
+    if (p.stage === 'a_testar') {
+      actions = `<div class="card-actions"><button class="card-link link-go" onclick="moveToLive('${p.id}')">Agendar mini-live →</button></div>`;
+    } else if (p.stage === 'em_teste') {
+      actions = `<div class="card-actions">
+        <button class="card-link link-go" onclick="openOutcome('${p.id}')">✓ Vendeu</button>
+        <button class="card-link link-bad" onclick="openOutcome('${p.id}')">✕ Não vendeu</button>
+      </div>`;
+    }
+    const linkHtml = p.product_link ? `<a class="card-link-url" href="${p.product_link}" target="_blank">ver produto ↗</a>` : '';
+    const noteHtml = p.user_note ? `<div class="card-note">"${p.user_note}"</div>` : '';
+    return `
+      <div class="card">
+        <div class="card-top"><div class="card-name">${p.name}</div><span class="score-pill ${scoreClass(p.score)} mono">${p.score}</span></div>
+        <div class="card-meta"><span>Com. ${p.commission}%</span><span>★ ${p.rating}</span>${linkHtml}</div>
+        ${actions}
+        ${noteHtml}
+      </div>`;
+  }
+
+  async function moveToLive(id) {
+    await supa.from('scout_products').update({ stage: 'em_teste' }).eq('id', id);
+    products = products.map(p => p.id === id ? { ...p, stage: 'em_teste' } : p);
+    renderBoard();
+  }
+
+  function openOutcome(id) {
+    outcomeTargetId = id;
+    document.getElementById('outcome-note').value = '';
+    document.getElementById('outcome-modal').classList.add('open');
+  }
+
+  async function confirmOutcome(hit) {
+    const id = outcomeTargetId;
+    const note = document.getElementById('outcome-note').value.trim();
+    const product = products.find(p => p.id === id);
+    const nextStage = hit ? 'aprovado' : 'descartado';
+
+    await supa.from('scout_products').update({ stage: nextStage, outcome: hit, user_note: note }).eq('id', id);
+    products = products.map(p => p.id === id ? { ...p, stage: nextStage, outcome: hit, user_note: note } : p);
+
+    // aprendizado: ajusta os pesos com base no que contribuiu pro score desse produto
+    const lr = 0.05;
+    for (const key in weights) {
+      const n = normalize(key, product[key] || 0);
+      const delta = lr * (hit ? 1 : -1) * n;
+      weights[key] = Math.min(2.6, Math.max(0.4, weights[key] + delta));
+    }
+    await supa.from('scout_weights').update({
+      commission: weights.commission, rating: weights.rating, ratio: weights.ratio, demo_ease: weights.demo_ease,
+      recalibrations: (await supa.from('scout_weights').select('recalibrations').maybeSingle()).data?.recalibrations + 1 || 1,
+    }).eq('user_id', session.user.id);
+
+    document.getElementById('outcome-modal').classList.remove('open');
+    renderBoard();
+    updateAccuracy();
+    refreshInsight();
+  }
+
+  // ---------------- ACCURACY ----------------
+  function updateAccuracy() {
+    const concluded = products.filter(p => p.outcome !== null && p.outcome !== undefined)
+      .sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at))
+      .slice(-20);
+
+    const last5 = concluded.slice(-5);
+    const hits5 = last5.filter(p => p.outcome).length;
+    document.getElementById('accuracy-value').innerHTML = `${hits5}<span class="of"> / ${last5.length}</span>`;
+    document.getElementById('nav-accuracy').textContent = `${hits5} / ${last5.length || '—'}`;
+
+    const hitsAll = concluded.filter(p => p.outcome).length;
+    document.getElementById('accuracy-desc').textContent = concluded.length
+      ? `${hitsAll} acertos nos últimos ${concluded.length} testes registrados.`
+      : 'Registre resultados pra começar a ver sua taxa de acerto subir.';
+
+    const barsEl = document.getElementById('accuracy-bars');
+    barsEl.innerHTML = concluded.slice(-10).map(p => {
+      const height = p.outcome ? 55 + (p.score * 3) : 15 + (p.score * 2);
+      return `<div class="bar ${p.outcome ? 'hit' : 'miss'}" style="height:${Math.min(height, 95)}%"></div>`;
+    }).join('');
+  }
+
+  // ---------------- INSIGHT (calls Edge Function) ----------------
+  async function refreshInsight() {
+    const history = products.map(p => ({
+      name: p.name, stage: p.stage, outcome: p.outcome, score: p.score,
+      commission: p.commission, rating: p.rating, ratio: p.ratio, demo_ease: p.demo_ease, user_note: p.user_note,
+    }));
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/scout-insight`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        body: JSON.stringify({ history }),
+      });
+      const data = await res.json();
+      document.getElementById('insight-text').textContent = data.insight || 'Sem insight disponível agora.';
+      document.getElementById('insight-meta').textContent = `com base em ${history.filter(h => h.outcome !== null && h.outcome !== undefined).length} teste(s) registrado(s)`;
+    } catch (err) {
+      document.getElementById('insight-text').textContent = 'Não consegui gerar o insight agora — confira se a Edge Function está no ar.';
+    }
+  }
+
+  // ---------------- BOOT ----------------
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+  });
+
+  (async function init() {
+    const { data } = await supa.auth.getSession();
+    if (data.session) {
+      session = data.session;
+      await enterApp();
+    }
+  })();
+</script>
+
+</body>
+</html>
