@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scout</title>
+<title>Scout Live</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap');
@@ -182,7 +182,7 @@
 <!-- ============ AUTH SCREEN ============ -->
 <div id="auth-screen">
   <div class="auth-box">
-    <div class="auth-logo"><span class="dot"></span><span class="serif">Scout</span></div>
+    <div class="auth-logo"><span class="dot"></span><span class="serif">Scout Live</span></div>
     <div class="auth-title serif" id="auth-title">Entrar</div>
     <div class="auth-sub" id="auth-sub">Seus testes, seus dados — ninguém mais vê.</div>
     <input class="field" id="auth-email" type="email" placeholder="E-mail" autocomplete="email" />
@@ -198,7 +198,7 @@
 <!-- ============ APP ============ -->
 <div id="app" class="hidden">
   <nav>
-    <div class="logo"><span class="dot"></span><span class="serif">Scout</span></div>
+    <div class="logo"><span class="dot"></span><span class="serif">Scout Live</span></div>
     <div class="nav-right">
       <div class="accuracy-pill mono" id="nav-accuracy">— / —</div>
       <button class="logout-btn" onclick="handleLogout()">Sair</button>
@@ -212,7 +212,7 @@
         <p class="sub">Manda o print da comissão, ela lê os dados, calcula a prioridade e aprende com cada resultado que você registra.</p>
       </div>
       <div class="insight-card">
-        <div class="insight-label">Insight da Scout</div>
+        <div class="insight-label">Insight da Scout Live</div>
         <div class="insight-text" id="insight-text">Carregando...</div>
         <div class="insight-meta" id="insight-meta"></div>
       </div>
@@ -252,7 +252,7 @@
           <input class="field" id="rv-rating" placeholder="Nota (1-5)" type="number" step="0.1">
           <input class="field" id="rv-ratio" placeholder="Vídeo/Live" type="number" step="0.1">
         </div>
-        <div class="review-note">Confira os dados que a Scout leu do print. Corrige aqui se algo saiu errado antes de salvar.</div>
+        <div class="review-note">Confira os dados que a Scout Live leu do print. Corrige aqui se algo saiu errado antes de salvar.</div>
         <div style="display:flex; gap:10px; margin-top:14px;">
           <button class="btn-primary" onclick="saveProduct()">Salvar no pipeline</button>
           <button class="btn-ghost" onclick="cancelReview()">Cancelar</button>
@@ -278,14 +278,14 @@
     </div>
   </div>
 
-  <footer>Scout · construído pra encontrar o próximo produto, não o próximo palpite</footer>
+  <footer>Scout Live · construído pra encontrar o próximo produto, não o próximo palpite</footer>
 </div>
 
 <!-- OUTCOME MODAL -->
 <div class="modal-overlay" id="outcome-modal">
   <div class="modal-box">
     <h3>Como foi de verdade?</h3>
-    <p>Uma frase curta sobre o motivo ajuda a Scout a entender o padrão, não só o número.</p>
+    <p>Uma frase curta sobre o motivo ajuda a Scout Live a entender o padrão, não só o número.</p>
     <textarea class="field" id="outcome-note" placeholder="Ex: vendeu bem depois que mostrei o antes/depois"></textarea>
     <div class="outcome-actions">
       <button class="outcome-btn good" onclick="confirmOutcome(true)">Deu resultado bom</button>
