@@ -144,6 +144,42 @@
 
   .review-box { background: var(--surface-raised); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-top: 16px; }
   .review-box .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .verdict-banner {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border-radius: 12px; padding: 14px 18px; margin: 16px 0; font-size: 13px; font-weight: 700;
+  }
+  .verdict-high { background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.35); color: var(--cyan); }
+  .verdict-mid { background: rgba(232,184,75,0.12); border: 1px solid rgba(232,184,75,0.35); color: #E8B84B; }
+  .verdict-low { background: rgba(255,92,92,0.12); border: 1px solid rgba(255,92,92,0.35); color: var(--red); }
+  .verdict-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 100px; background: rgba(255,255,255,0.08); }
+
+  .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
+  .metric-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .metric-card .m-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 6px; }
+  .metric-card .m-value { font-size: 18px; font-weight: 800; }
+
+  .reasoning-box {
+    background: var(--surface); border-left: 3px solid var(--cyan); border-radius: 8px;
+    padding: 12px 16px; font-size: 13px; color: var(--text); line-height: 1.5; margin: 14px 0;
+  }
+
+  .action-plan { list-style: none; margin: 14px 0; padding: 0; }
+  .action-plan li {
+    display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text);
+    padding: 8px 0; border-bottom: 1px solid var(--line);
+  }
+  .action-plan li:last-child { border-bottom: none; }
+  .action-plan .step-num {
+    width: 20px; height: 20px; border-radius: 50%; background: rgba(34,211,238,0.15); color: var(--cyan);
+    font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .history-table th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .history-table td { padding: 10px; border-bottom: 1px solid var(--line); color: var(--text); }
+  .history-table tr:last-child td { border-bottom: none; }
+  .history-tag { font-size: 10px; padding: 3px 8px; border-radius: 100px; font-weight: 700; }
   .review-note { font-size: 12px; color: var(--muted-dim); margin-top: 8px; }
   .panel-error { color: var(--red); font-size: 13px; margin-top: 10px; }
 
@@ -257,7 +293,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>
         Pipeline de teste
       </button>
-      <button class="nav-item" data-target="section-accuracy">
+      <button class="nav-item" data-target="section-history">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
         Histórico
       </button>
@@ -374,19 +410,43 @@
 
       <div class="review-box hidden" id="review-box">
         <div class="field-row">
-          <input class="field" id="rv-name" placeholder="Nome">
-          <input class="field" id="rv-commission" placeholder="Comissão %" type="number">
+          <input class="field" id="rv-name" placeholder="Nome" oninput="renderVerdict()">
+          <input class="field" id="rv-commission" placeholder="Comissão %" type="number" oninput="renderVerdict()">
         </div>
         <div class="field-row">
-          <input class="field" id="rv-rating" placeholder="Nota (1-5)" type="number" step="0.1">
-          <input class="field" id="rv-ratio" placeholder="Vídeo/Live" type="number" step="0.1">
+          <input class="field" id="rv-rating" placeholder="Nota (1-5)" type="number" step="0.1" oninput="renderVerdict()">
+          <input class="field" id="rv-ratio" placeholder="Vídeo/Live" type="number" step="0.1" oninput="renderVerdict()">
         </div>
-        <div class="review-note">Confira os dados que a Scout Live leu do print. Corrige aqui se algo saiu errado antes de salvar.</div>
+        <div class="review-note">Confira os dados que a Scout Live leu do print. Corrige aqui se algo saiu errado — o veredito abaixo se atualiza sozinho.</div>
+
+        <div class="verdict-banner" id="verdict-banner">
+          <span id="verdict-text">—</span>
+          <span class="verdict-tag" id="verdict-tag">IP —</span>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-card"><div class="m-label">Comissão</div><div class="m-value" id="mc-commission">—</div></div>
+          <div class="metric-card"><div class="m-label">Nota</div><div class="m-value" id="mc-rating">—</div></div>
+          <div class="metric-card"><div class="m-label">Índice de potencial</div><div class="m-value" id="mc-score">—</div></div>
+        </div>
+
+        <div class="reasoning-box" id="reasoning-box">—</div>
+
+        <ol class="action-plan" id="action-plan"></ol>
+
         <div style="display:flex; gap:10px; margin-top:14px;">
           <button class="btn-primary" onclick="saveProduct()">Salvar no pipeline</button>
           <button class="btn-ghost" onclick="cancelReview()">Cancelar</button>
         </div>
       </div>
+    </div>
+
+    <div class="section-label" id="section-history">Histórico de análises</div>
+    <div class="panel" style="margin-bottom:40px;">
+      <table class="history-table">
+        <thead><tr><th>Produto</th><th>Prioridade</th><th>IP</th><th>Data</th></tr></thead>
+        <tbody id="history-body"><tr><td colspan="4" style="color:var(--muted-dim); font-style:italic;">nada analisado ainda</td></tr></tbody>
+      </table>
     </div>
 
     <div class="section-label" id="section-pipeline">Pipeline de teste</div>
@@ -512,6 +572,7 @@
     await loadProducts();
     renderBoard();
     updateAccuracy();
+    renderHistory();
     refreshInsight();
   }
 
@@ -549,10 +610,88 @@
     }
     return Math.round((total / max) * 100) / 10;
   }
+  function calcScoreDetailed(p) {
+    let total = 0, max = 0;
+    const contributions = {};
+    for (const key in weights) {
+      const n = normalize(key, p[key] || 0);
+      const c = n * weights[key];
+      contributions[key] = c;
+      total += c;
+      max += weights[key];
+    }
+    return { score: Math.round((total / max) * 100) / 10, contributions };
+  }
   function scoreClass(score) {
     if (score >= 7) return 'score-high';
     if (score >= 5) return 'score-mid';
     return 'score-low';
+  }
+
+  const FACTOR_LABELS = { commission: 'a comissão', rating: 'a nota do produto', ratio: 'a relação vídeo/live', demo_ease: 'a facilidade de demonstração' };
+
+  function priorityTier(score) {
+    if (score >= 7.5) return { level: 'high', label: '🔥 Alta prioridade — teste imediatamente', tag: 'ALTA' };
+    if (score >= 5.5) return { level: 'mid', label: '⚡ Prioridade média — vale testar em breve', tag: 'MÉDIA' };
+    return { level: 'low', label: '🐢 Baixa prioridade — só se sobrar tempo', tag: 'BAIXA' };
+  }
+
+  function buildReasoning(p, contributions, tier) {
+    const sorted = Object.entries(contributions).sort((a, b) => b[1] - a[1]);
+    const top = sorted[0][0];
+    const second = sorted[1][0];
+    const weakest = sorted[sorted.length - 1][0];
+
+    if (tier.level === 'high') {
+      return `Isso pesou mais que o resto: ${FACTOR_LABELS[top]} e ${FACTOR_LABELS[second]} estão fortes nesse produto. Combinação parecida já rendeu resultado bom no seu histórico — vale ir pra mini-live.`;
+    }
+    if (tier.level === 'mid') {
+      return `${FACTOR_LABELS[top]} está boa, mas ${FACTOR_LABELS[weakest]} está fraca — isso puxa o índice pra baixo. Pode valer testar mesmo assim, mas não é prioridade máxima.`;
+    }
+    return `${FACTOR_LABELS[weakest]} está bem abaixo do ideal, e nenhum outro fator compensa o suficiente. Antes de gastar tempo numa mini-live, veja se dá pra melhorar isso ou parta pro próximo candidato.`;
+  }
+
+  function buildActionPlan(p, tier) {
+    const steps = [];
+    if (tier.level !== 'low') steps.push('Solicitar amostra grátis do produto');
+    steps.push('Agendar mini-live de 30 min só pra esse produto');
+    steps.push('Postar 1 teaser um dia antes anunciando o produto');
+    if ((p.demo_ease || 0) < 3) {
+      steps.push('Ensaiar a demonstração antes — facilidade de demo está baixa, treine o "antes e depois"');
+    } else {
+      steps.push('Focar a fala em demonstração ao vivo, é o ponto forte desse produto');
+    }
+    steps.push('Criar Highlight com os melhores momentos assim que a mini-live terminar');
+    return steps;
+  }
+
+  function renderVerdict() {
+    const p = {
+      commission: parseFloat(document.getElementById('rv-commission').value) || 0,
+      rating: parseFloat(document.getElementById('rv-rating').value) || 0,
+      ratio: parseFloat(document.getElementById('rv-ratio').value) || 0,
+      demo_ease: pendingExtracted ? pendingExtracted.demo_ease : 3,
+    };
+    const { score, contributions } = calcScoreDetailed(p);
+    const tier = priorityTier(score);
+
+    const banner = document.getElementById('verdict-banner');
+    banner.className = 'verdict-banner verdict-' + tier.level;
+    document.getElementById('verdict-text').textContent = tier.label;
+    document.getElementById('verdict-tag').textContent = 'IP ' + score;
+
+    document.getElementById('mc-commission').textContent = p.commission + '%';
+    document.getElementById('mc-rating').textContent = p.rating || '—';
+    document.getElementById('mc-score').textContent = score;
+
+    document.getElementById('reasoning-box').textContent = buildReasoning(p, contributions, tier);
+
+    const steps = buildActionPlan(p, tier);
+    document.getElementById('action-plan').innerHTML = steps.map((s, i) =>
+      `<li><span class="step-num">${i + 1}</span>${s}</li>`
+    ).join('');
+
+    if (pendingExtracted) pendingExtracted._lastScore = score;
   }
 
   // ---------------- FILE UPLOAD ----------------
@@ -639,6 +778,7 @@
       document.getElementById('rv-rating').value = pendingExtracted.rating;
       document.getElementById('rv-ratio').value = pendingExtracted.ratio;
       document.getElementById('review-box').classList.remove('hidden');
+      renderVerdict();
     } catch (err) {
       errEl.textContent = "Erro ao analisar: " + err.message;
     } finally {
@@ -674,6 +814,7 @@
     products.unshift(data);
     resetPanel();
     renderBoard();
+    renderHistory();
   }
 
   function resetPanel() {
@@ -755,10 +896,31 @@
     document.getElementById('outcome-modal').classList.remove('open');
     renderBoard();
     updateAccuracy();
+    renderHistory();
     refreshInsight();
   }
 
-  // ---------------- ACCURACY ----------------
+  // ---------------- HISTORY TABLE ----------------
+  function renderHistory() {
+    const body = document.getElementById('history-body');
+    const sorted = [...products].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    if (!sorted.length) {
+      body.innerHTML = '<tr><td colspan="4" style="color:var(--muted-dim); font-style:italic;">nada analisado ainda</td></tr>';
+      return;
+    }
+    body.innerHTML = sorted.map(p => {
+      const tier = priorityTier(p.score);
+      const tagColor = tier.level === 'high' ? 'var(--cyan)' : tier.level === 'mid' ? '#E8B84B' : 'var(--red)';
+      const tagBg = tier.level === 'high' ? 'rgba(34,211,238,0.15)' : tier.level === 'mid' ? 'rgba(232,184,75,0.15)' : 'rgba(255,92,92,0.15)';
+      const date = new Date(p.created_at).toLocaleDateString('pt-BR');
+      return `<tr>
+        <td>${p.name}</td>
+        <td><span class="history-tag" style="color:${tagColor}; background:${tagBg};">${tier.tag}</span></td>
+        <td>${p.score}</td>
+        <td style="color:var(--muted);">${date}</td>
+      </tr>`;
+    }).join('');
+  }
   function updateAccuracy() {
     const concluded = products.filter(p => p.outcome !== null && p.outcome !== undefined)
       .sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at))
