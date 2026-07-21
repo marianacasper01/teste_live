@@ -28,6 +28,7 @@
   .hidden { display: none !important; }
   .cyan-text { color: var(--cyan); }
 
+  /* ---------- AUTH SCREEN ---------- */
   #auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
   .auth-box { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 40px; width: 100%; max-width: 380px; }
   .auth-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
@@ -49,6 +50,7 @@
   .auth-toggle span { color: var(--cyan); }
   .auth-error { font-size: 13px; color: var(--red); margin-top: 10px; min-height: 18px; }
 
+  /* ---------- APP SHELL ---------- */
   .app-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
   .sidebar {
@@ -85,6 +87,7 @@
 
   .sidebar-waves { position: absolute; bottom: -20px; left: -40px; width: 280px; height: 220px; opacity: 0.5; z-index: 1; pointer-events: none; }
 
+  /* ---------- MAIN CONTENT ---------- */
   .main-content { padding: 0 0 60px; overflow-x: hidden; }
   .topbar { display: flex; justify-content: flex-end; align-items: center; gap: 14px; padding: 22px 32px 0; }
   .accuracy-pill {
@@ -96,6 +99,7 @@
 
   .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
 
+  /* ---------- HERO ---------- */
   .hero {
     position: relative; display: grid; grid-template-columns: 1fr 1fr 340px; gap: 20px; padding: 40px 32px 50px; align-items: center;
   }
@@ -133,6 +137,7 @@
   .insight-text { font-size: 14px; line-height: 1.55; color: var(--text); }
   .insight-meta { font-size: 11px; color: var(--muted-dim); margin-top: 14px; }
 
+  /* ---------- ADD PANEL ---------- */
   .panel {
     background: linear-gradient(160deg, rgba(34,211,238,0.04), rgba(11,15,32,0.9));
     border: 1px solid var(--line); border-radius: 16px; padding: 28px; margin: 0 32px 40px;
@@ -219,6 +224,7 @@
   .review-note { font-size: 12px; color: var(--muted-dim); margin-top: 8px; }
   .panel-error { color: var(--red); font-size: 13px; margin-top: 10px; }
 
+  /* ---------- PIPELINE ---------- */
   .section-label { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 32px 16px; font-weight: 700; }
   .section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
 
@@ -250,6 +256,7 @@
   .link-bad { color: var(--red); }
   a.card-link-url { font-size: 11px; color: var(--muted); text-decoration: none; }
 
+  /* ---------- ACCURACY ---------- */
   .accuracy-bar { margin: 0 32px 60px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 30px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: center; }
   .accuracy-left .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
   .accuracy-left .value { font-size: 34px; font-weight: 800; }
@@ -260,6 +267,7 @@
   .bar.hit { background: linear-gradient(180deg, var(--cyan), rgba(34,211,238,0.2)); }
   .bar.miss { background: linear-gradient(180deg, rgba(255,92,92,0.6), rgba(255,92,92,0.15)); }
 
+  /* ---------- MODALS ---------- */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
   .modal-overlay.open { display: flex; }
   .modal-box { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px; width: 100%; max-width: 400px; }
@@ -273,6 +281,9 @@
 
   footer { text-align: center; padding: 26px; font-size: 12px; color: var(--muted-dim); }
 
+
+
+  /* ---------- NAVEGAÇÃO POR ABAS ---------- */
   .tab-page { display: none; animation: tabFade .24s ease; }
   .tab-page.active { display: block; }
   @keyframes tabFade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
@@ -309,6 +320,8 @@
   .coming-visual { width:280px; height:280px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1px solid rgba(34,211,238,.2); box-shadow: inset 0 0 70px rgba(34,211,238,.08), 0 0 70px rgba(34,211,238,.08); }
   .coming-visual svg { width:125px; height:125px; color:var(--cyan); filter:drop-shadow(0 0 18px rgba(34,211,238,.5)); }
 
+
+  /* ---------- CONTROLE FINANCEIRO ---------- */
   .finance-shell { padding: 0 32px 60px; }
   .finance-toolbar { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
   .finance-toolbar-left { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
@@ -400,6 +413,8 @@
   .finance-back-btn { border:1px solid var(--line); background:var(--surface-raised); color:var(--text); border-radius:10px; padding:10px 13px; cursor:pointer; }
   .finance-back-btn:hover { border-color:var(--cyan); color:var(--cyan); }
 
+
+  /* ---------- FINANCEIRO VISUAL / COLORIDO ---------- */
   .finance-stat { position:relative; overflow:hidden; isolation:isolate; }
   .finance-stat::before { content:''; position:absolute; inset:0; opacity:.12; pointer-events:none; z-index:-1; }
   .finance-stat.stat-gmv { border-color:rgba(34,211,238,.34); }
@@ -742,10 +757,48 @@
   @media(max-width:900px){.hot-layout{grid-template-columns:1fr}.hot-product-list{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @media(max-width:620px){.hot-product-list{grid-template-columns:1fr}.hot-product-card{min-height:350px}}
 
+
+  /* ---------- PRÉ-TESTE INTELIGENTE ---------- */
+  .pretest-shell{
+    margin:16px 0;
+    border:1px solid rgba(34,211,238,.22);
+    border-radius:16px;
+    padding:18px;
+    background:
+      radial-gradient(circle at 90% 0%,rgba(34,211,238,.10),transparent 34%),
+      linear-gradient(155deg,rgba(10,18,38,.98),rgba(6,10,24,.98));
+  }
+  .pretest-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:16px}
+  .pretest-head h3{font-size:15px;margin-bottom:4px}
+  .pretest-head p{font-size:11px;color:var(--muted)}
+  .pretest-confidence{padding:7px 10px;border-radius:999px;font-size:10px;font-weight:700;color:#A7F3D0;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2)}
+  .pretest-grid{display:grid;grid-template-columns:170px 1fr;gap:18px;align-items:center}
+  .pretest-score-ring{
+    --p:0;width:150px;height:150px;border-radius:50%;display:grid;place-items:center;position:relative;
+    background:conic-gradient(#22D3EE calc(var(--p)*1%),rgba(255,255,255,.06) 0);
+    box-shadow:0 0 35px rgba(34,211,238,.12)
+  }
+  .pretest-score-ring::before{content:'';position:absolute;width:116px;height:116px;border-radius:50%;background:#091020;border:1px solid rgba(255,255,255,.06)}
+  .pretest-score-content{position:relative;z-index:1;text-align:center}
+  .pretest-score-content strong{display:block;font-size:30px;color:#67E8F9}
+  .pretest-score-content small{font-size:9px;color:var(--muted);text-transform:uppercase}
+  .pretest-decision{margin-top:10px;font-size:11px;font-weight:800;text-align:center}
+  .pretest-factors{display:flex;flex-direction:column;gap:10px}
+  .pretest-factor-top{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px}
+  .pretest-track{height:7px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+  .pretest-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#22D3EE,#8B5CF6);transition:width .25s}
+  .pretest-signals{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}
+  .pretest-signal{padding:10px;border-radius:10px;background:rgba(255,255,255,.025);border:1px solid var(--line)}
+  .pretest-signal small{display:block;font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+  .pretest-signal strong{font-size:11px}
+  .pretest-good{color:#6EE7B7}.pretest-warn{color:#FCD34D}.pretest-bad{color:#FB7185}
+  @media(max-width:700px){.pretest-grid{grid-template-columns:1fr}.pretest-score-ring{margin:auto}.pretest-signals{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 
+<!-- ============ AUTH SCREEN ============ -->
 <div id="auth-screen">
   <div class="auth-box">
     <div class="auth-logo">
@@ -764,6 +817,7 @@
   </div>
 </div>
 
+<!-- ============ APP ============ -->
 <div id="app" class="hidden app-shell">
   <aside class="sidebar">
     <div class="sidebar-logo">
@@ -1031,13 +1085,65 @@
           <span class="verdict-tag" id="verdict-tag">IP —</span>
         </div>
 
-        <div class="metric-row" style="grid-template-columns: repeat(5, 1fr);">
+        <div class="metric-row" style="grid-template-columns: repeat(4, 1fr);">
           <div class="metric-card"><div class="m-label">Comissão</div><div class="m-value" id="mc-commission">—</div></div>
           <div class="metric-card"><div class="m-label">Nota</div><div class="m-value" id="mc-rating">—</div></div>
           <div class="metric-card"><div class="m-label">Potencial do produto</div><div class="m-value" id="mc-viral">—</div></div>
-          <div class="metric-card"><div class="m-label">Momentum</div><div class="m-value" id="mc-momentum">—</div></div>
           <div class="metric-card"><div class="m-label">Índice de potencial</div><div class="m-value" id="mc-score">—</div></div>
         </div>
+
+        
+        <div class="pretest-shell">
+          <div class="pretest-head">
+            <div>
+              <h3>🧠 Pré-Teste Inteligente</h3>
+              <p>A Scout cruza oferta, produto e histórico para estimar se vale gastar uma live nesse candidato.</p>
+            </div>
+            <div class="pretest-confidence" id="pretest-confidence">Confiança —</div>
+          </div>
+
+          <div class="pretest-grid">
+            <div>
+              <div class="pretest-score-ring" id="pretest-score-ring">
+                <div class="pretest-score-content">
+                  <strong id="pretest-score">—</strong>
+                  <small>chance de teste</small>
+                </div>
+              </div>
+              <div class="pretest-decision" id="pretest-decision">Aguardando análise</div>
+            </div>
+
+            <div class="pretest-factors">
+              <div>
+                <div class="pretest-factor-top"><span>Potencial de venda</span><strong id="pf-sale">—</strong></div>
+                <div class="pretest-track"><div class="pretest-fill" id="pf-sale-bar"></div></div>
+              </div>
+              <div>
+                <div class="pretest-factor-top"><span>Facilidade para demonstrar</span><strong id="pf-demo">—</strong></div>
+                <div class="pretest-track"><div class="pretest-fill" id="pf-demo-bar"></div></div>
+              </div>
+              <div>
+                <div class="pretest-factor-top"><span>Força da comissão</span><strong id="pf-commission">—</strong></div>
+                <div class="pretest-track"><div class="pretest-fill" id="pf-commission-bar"></div></div>
+              </div>
+              <div>
+                <div class="pretest-factor-top"><span>Prova social</span><strong id="pf-proof">—</strong></div>
+                <div class="pretest-track"><div class="pretest-fill" id="pf-proof-bar"></div></div>
+              </div>
+              <div>
+                <div class="pretest-factor-top"><span>Aderência para live</span><strong id="pf-live">—</strong></div>
+                <div class="pretest-track"><div class="pretest-fill" id="pf-live-bar"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pretest-signals">
+            <div class="pretest-signal"><small>Decisão</small><strong id="pretest-action">—</strong></div>
+            <div class="pretest-signal"><small>Teste recomendado</small><strong id="pretest-duration">—</strong></div>
+            <div class="pretest-signal"><small>Principal risco</small><strong id="pretest-risk">—</strong></div>
+          </div>
+        </div>
+
 
         <div class="reasoning-box" id="reasoning-box">—</div>
 
@@ -1111,8 +1217,7 @@
         <div class="coming-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v5h5M8 12h8M8 16h6"/></svg></div>
       </div></div>
     </section>
-
-    <section class="tab-page" id="tab-hot-products">
+<section class="tab-page" id="tab-hot-products">
       <div class="page-intro">
         <div class="eyebrow">Radar Scout em tempo real</div>
         <h1>Produtos com maior <span class="cyan-text">potencial agora</span></h1>
@@ -1182,6 +1287,8 @@
   </div>
 </div>
 
+
+<!-- OUTCOME MODAL -->
 <div class="modal-overlay" id="outcome-modal">
   <div class="modal-box">
     <h3>Como foi de verdade?</h3>
@@ -1196,24 +1303,30 @@
 
 <script>
 
+  // ============================================================
+  // CONFIGURAÇÃO — preencha com o SEU projeto Supabase novo
+  // (Project Settings → API)
+  // ============================================================
   const SUPABASE_URL = "https://oreyuvesclpmedcicyfo.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_Jb9AnTT9h7MbJ8y8KDNH-Q_VM6CxSOa";
 
   const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  let authMode = "login";
+  let authMode = "login"; // "login" | "signup"
   let session = null;
   let products = [];
-  let weights = { commission: 1.4, rating: 1.2, ratio: 1.6, demo_ease: 1.3, viral: 1.4, momentum: 1.4 };
-  let pendingFiles = [];
+  let weights = { commission: 1.4, rating: 1.2, ratio: 1.6, demo_ease: 1.3, viral: 1.4 };
+  let pendingFiles = []; // até 5 arquivos
   let pendingExtracted = null;
   let outcomeTargetId = null;
 
+  // Controle financeiro (armazenamento local por usuário)
   let financeAccounts = [];
   let financeEntries = [];
   let selectedFinanceAccount = null;
   let financeMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 
+  // ---------------- AUTH ----------------
   function toggleAuthMode() {
     authMode = authMode === "login" ? "signup" : "login";
     document.getElementById('auth-title').textContent = authMode === "login" ? "Entrar" : "Criar conta";
@@ -1266,10 +1379,11 @@
     loadFinanceData();
   }
 
+  // ---------------- DATA LOADING ----------------
   async function loadWeights() {
     const { data } = await supa.from('scout_weights').select('*').maybeSingle();
     if (data) {
-      weights = { commission: data.commission, rating: data.rating, ratio: data.ratio, demo_ease: data.demo_ease, viral: data.viral ?? 1.4, momentum: data.momentum ?? 1.4 };
+      weights = { commission: data.commission, rating: data.rating, ratio: data.ratio, demo_ease: data.demo_ease, viral: data.viral ?? 1.4 };
     } else {
       const userId = session.user.id;
       await supa.from('scout_weights').insert({ user_id: userId, ...weights });
@@ -1282,13 +1396,13 @@
     products = data || [];
   }
 
+  // ---------------- SCORING ----------------
   function normalize(key, value) {
     if (key === 'commission') return Math.min(value, 30) / 30;
     if (key === 'rating') return Math.min(Math.max(value - 3.5, 0), 1.5) / 1.5;
     if (key === 'ratio') return Math.min(value, 4) / 4;
     if (key === 'demo_ease') return value / 5;
     if (key === 'viral') return value / 5;
-    if (key === 'momentum') return value / 5;
     return 0;
   }
   function calcScore(p) {
@@ -1318,7 +1432,7 @@
     return 'score-low';
   }
 
-  const FACTOR_LABELS = { commission: 'a comissão', rating: 'a nota do produto', ratio: 'a relação vídeo/live', demo_ease: 'a facilidade de demonstração', viral: 'o potencial do produto em si', momentum: 'o momentum de crescimento' };
+  const FACTOR_LABELS = { commission: 'a comissão', rating: 'a nota do produto', ratio: 'a relação vídeo/live', demo_ease: 'a facilidade de demonstração', viral: 'o potencial do produto em si' };
 
   function priorityTier(score) {
     if (score >= 7.5) return { level: 'high', label: '🔥 Alta prioridade — teste imediatamente', tag: 'ALTA' };
@@ -1355,6 +1469,98 @@
     return steps;
   }
 
+
+  function setPretestFactor(id, value){
+    const safe = Math.max(0, Math.min(100, Math.round(value)));
+    const text = document.getElementById(id);
+    const bar = document.getElementById(id + '-bar');
+    if(text) text.textContent = safe + '%';
+    if(bar) bar.style.width = safe + '%';
+  }
+
+  function renderPretest(p, score){
+    const commission = Math.min(100, (p.commission / 30) * 100);
+    const proof = Math.min(100, Math.max(0, ((p.rating - 3.5) / 1.5) * 100));
+    const demo = Math.min(100, (p.demo_ease / 5) * 100);
+    const liveFit = Math.min(100, (p.ratio / 4) * 100);
+    const sale = Math.min(100, (p.viral / 5) * 100);
+
+    const probability = Math.round(
+      sale * .28 +
+      demo * .23 +
+      commission * .20 +
+      proof * .14 +
+      liveFit * .15
+    );
+
+    const completeness = [
+      p.commission > 0,
+      p.rating > 0,
+      p.ratio > 0,
+      p.demo_ease > 0,
+      p.viral > 0
+    ].filter(Boolean).length;
+
+    const confidence = completeness >= 5 ? 91 : completeness === 4 ? 82 : 68;
+
+    setPretestFactor('pf-sale', sale);
+    setPretestFactor('pf-demo', demo);
+    setPretestFactor('pf-commission', commission);
+    setPretestFactor('pf-proof', proof);
+    setPretestFactor('pf-live', liveFit);
+
+    const ring = document.getElementById('pretest-score-ring');
+    if(ring) ring.style.setProperty('--p', probability);
+    document.getElementById('pretest-score').textContent = probability + '%';
+    document.getElementById('pretest-confidence').textContent = 'Confiança ' + confidence + '%';
+
+    let decision, action, duration, risk, cls;
+    if(probability >= 78){
+      decision = '🟢 TESTAR AGORA';
+      action = 'Alta prioridade';
+      duration = '2 mini-lives de 30 min';
+      cls = 'pretest-good';
+    }else if(probability >= 58){
+      decision = '🟡 TESTAR COM CAUTELA';
+      action = 'Teste controlado';
+      duration = '1 mini-live de 30 min';
+      cls = 'pretest-warn';
+    }else{
+      decision = '🔴 NÃO PRIORIZAR';
+      action = 'Buscar outro produto';
+      duration = 'Não investir live agora';
+      cls = 'pretest-bad';
+    }
+
+    const factors = [
+      ['Comissão baixa', commission],
+      ['Pouca prova social', proof],
+      ['Demonstração fraca', demo],
+      ['Baixa aderência à live', liveFit],
+      ['Pouco apelo de venda', sale]
+    ].sort((a,b)=>a[1]-b[1]);
+
+    risk = factors[0][0];
+
+    const dec = document.getElementById('pretest-decision');
+    dec.textContent = decision;
+    dec.className = 'pretest-decision ' + cls;
+
+    const actionEl = document.getElementById('pretest-action');
+    actionEl.textContent = action;
+    actionEl.className = cls;
+
+    document.getElementById('pretest-duration').textContent = duration;
+    document.getElementById('pretest-risk').textContent = risk;
+
+    if(pendingExtracted){
+      pendingExtracted.pretest_probability = probability;
+      pendingExtracted.pretest_confidence = confidence;
+      pendingExtracted.pretest_decision = decision;
+    }
+  }
+
+
   function renderVerdict() {
     const p = {
       commission: parseFloat(document.getElementById('rv-commission').value) || 0,
@@ -1362,7 +1568,6 @@
       ratio: parseFloat(document.getElementById('rv-ratio').value) || 0,
       demo_ease: pendingExtracted ? pendingExtracted.demo_ease : 3,
       viral: pendingExtracted ? pendingExtracted.viral : 3,
-      momentum: pendingExtracted ? pendingExtracted.momentum : 3,
     };
     const { score, contributions } = calcScoreDetailed(p);
     const tier = priorityTier(score);
@@ -1375,15 +1580,13 @@
     document.getElementById('mc-commission').textContent = p.commission + '%';
     document.getElementById('mc-rating').textContent = p.rating || '—';
     document.getElementById('mc-viral').textContent = p.viral + '/5';
-    document.getElementById('mc-momentum').textContent = p.momentum + '/5';
     document.getElementById('mc-score').textContent = score;
+
+    renderPretest(p, score);
 
     let reasoningText = buildReasoning(p, contributions, tier);
     if (pendingExtracted && pendingExtracted.viral_reasoning) {
       reasoningText += ` Sobre o produto em si: ${pendingExtracted.viral_reasoning}`;
-    }
-    if (pendingExtracted && pendingExtracted.momentum_reasoning) {
-      reasoningText += ` Sobre o momentum: ${pendingExtracted.momentum_reasoning}`;
     }
     document.getElementById('reasoning-box').textContent = reasoningText;
 
@@ -1395,6 +1598,7 @@
     if (pendingExtracted) pendingExtracted._lastScore = score;
   }
 
+  // ---------------- FILE UPLOAD ----------------
   function handleFiles(input) {
     const errEl = document.getElementById('panel-error');
     errEl.textContent = "";
@@ -1404,7 +1608,7 @@
       incoming.splice(5 - pendingFiles.length);
     }
     pendingFiles = pendingFiles.concat(incoming);
-    input.value = "";
+    input.value = ""; // permite selecionar o mesmo arquivo de novo depois de remover
     renderUploadChips();
   }
 
@@ -1453,6 +1657,7 @@
     });
   }
 
+  // ---------------- ANALYZE (calls Edge Function) ----------------
   async function analyzeProduct() {
     const errEl = document.getElementById('panel-error');
     errEl.textContent = "";
@@ -1495,8 +1700,6 @@
         thumbnail: await thumbFromFile(pendingFiles[0]),
         viral: data.viral_potential || 3,
         viral_reasoning: data.viral_reasoning || '',
-        momentum: data.momentum_potential || 3,
-        momentum_reasoning: data.momentum_reasoning || '',
       };
 
       document.getElementById('rv-name').value = pendingExtracted.name;
@@ -1529,14 +1732,12 @@
       ratio: parseFloat(document.getElementById('rv-ratio').value) || 0,
       demo_ease: pendingExtracted.demo_ease,
       viral: pendingExtracted.viral,
-      momentum: pendingExtracted.momentum,
       product_link: pendingExtracted.product_link,
     };
     const { score, contributions } = calcScoreDetailed(p);
     const tier = priorityTier(score);
     let reasoning = buildReasoning(p, contributions, tier);
     if (pendingExtracted.viral_reasoning) reasoning += ` Sobre o produto em si: ${pendingExtracted.viral_reasoning}`;
-    if (pendingExtracted.momentum_reasoning) reasoning += ` Sobre o momentum: ${pendingExtracted.momentum_reasoning}`;
     const actionPlan = buildActionPlan(p, tier);
 
     const { data, error } = await supa.from('scout_products').insert({
@@ -1545,7 +1746,6 @@
       demo_ease: p.demo_ease, product_link: p.product_link, score, stage: 'a_testar',
       reasoning, action_plan: JSON.stringify(actionPlan), thumbnail: pendingExtracted.thumbnail,
       viral_potential: p.viral, viral_reasoning: pendingExtracted.viral_reasoning || null,
-      momentum: p.momentum, momentum_reasoning: pendingExtracted.momentum_reasoning || null,
     }).select().single();
 
     if (error) { document.getElementById('panel-error').textContent = error.message; return; }
@@ -1578,6 +1778,7 @@
     renderUploadChips();
   }
 
+  // ---------------- PIPELINE RENDER ----------------
   function renderBoard() {
     const stages = ['a_testar', 'em_teste', 'aprovado', 'descartado'];
     stages.forEach(stage => {
@@ -1659,6 +1860,7 @@
     await supa.from('scout_products').update({ stage: nextStage, outcome: hit, user_note: note }).eq('id', id);
     products = products.map(p => p.id === id ? { ...p, stage: nextStage, outcome: hit, user_note: note } : p);
 
+    // aprendizado: ajusta os pesos com base no que contribuiu pro score desse produto
     const lr = 0.05;
     for (const key in weights) {
       const rawValue = key === 'viral' ? product.viral_potential : product[key];
@@ -1667,7 +1869,7 @@
       weights[key] = Math.min(2.6, Math.max(0.4, weights[key] + delta));
     }
     await supa.from('scout_weights').update({
-      commission: weights.commission, rating: weights.rating, ratio: weights.ratio, demo_ease: weights.demo_ease, viral: weights.viral, momentum: weights.momentum,
+      commission: weights.commission, rating: weights.rating, ratio: weights.ratio, demo_ease: weights.demo_ease, viral: weights.viral,
       recalibrations: (await supa.from('scout_weights').select('recalibrations').maybeSingle()).data?.recalibrations + 1 || 1,
     }).eq('user_id', session.user.id);
 
@@ -1678,6 +1880,7 @@
     refreshInsight();
   }
 
+  // ---------------- HISTORY TABLE ----------------
   function renderHistory() {
     const body = document.getElementById('history-body');
     const sorted = [...products].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -1725,6 +1928,7 @@
     }).join('');
   }
 
+  // ---------------- INSIGHT (calls Edge Function) ----------------
   async function refreshInsight() {
     const history = products.map(p => ({
       name: p.name, stage: p.stage, outcome: p.outcome, score: p.score,
@@ -1745,6 +1949,8 @@
     }
   }
 
+
+  // ---------------- CONTROLE FINANCEIRO ----------------
   function financeStorageKey(type) {
     const uid = session?.user?.id || 'guest';
     return `scout_finance_${type}_${uid}`;
@@ -2054,6 +2260,7 @@
   function setFinanceMessage(text){ const el=document.getElementById('finance-message'); if(el)el.textContent=text||''; }
   function escapeHtml(text){ return String(text??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c])); }
 
+
   // ---------------- RADAR DE PRODUTOS QUENTES ----------------
   const hotProductsData = [
     {id:1,name:'Kit Organizador de Geladeira',emoji:'🧊',category:'Casa',price:39.90,commission:18.5,gmv:184300,growth:238,score:97,status:'Explodindo',competition:'Média',bars:[18,24,29,38,54,68,86,100]},
@@ -2206,6 +2413,8 @@
     });
   });
 
+
+  // ---------------- BOOT ----------------
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
   });
@@ -2221,6 +2430,7 @@
 </script>
 
 <script>
+  // Navegação lateral por abas reais: mostra somente o módulo selecionado.
   function openTab(tabId) {
     document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
     document.querySelectorAll('.nav-item[data-tab]').forEach(item => item.classList.remove('active'));
