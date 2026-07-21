@@ -794,6 +794,28 @@
   .pretest-good{color:#6EE7B7}.pretest-warn{color:#FCD34D}.pretest-bad{color:#FB7185}
   @media(max-width:700px){.pretest-grid{grid-template-columns:1fr}.pretest-score-ring{margin:auto}.pretest-signals{grid-template-columns:1fr}}
 
+
+  /* ---------- PIPELINE V2: ESTEIRA MAIS CLARA ---------- */
+  .pipeline-intro{margin:0 32px 16px;padding:16px 18px;border:1px solid rgba(34,211,238,.18);border-radius:14px;background:linear-gradient(135deg,rgba(34,211,238,.055),rgba(139,92,246,.035));display:flex;align-items:center;justify-content:space-between;gap:18px}
+  .pipeline-intro-copy strong{display:block;font-size:13px;margin-bottom:4px}.pipeline-intro-copy span{font-size:11px;color:var(--muted);line-height:1.5}
+  .pipeline-legend{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.pipeline-legend span{font-size:9px;color:var(--muted);padding:5px 8px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.025)}
+  .pipeline{display:grid;grid-template-columns:repeat(4,minmax(250px,1fr));gap:12px;padding:0 32px 60px;overflow-x:auto;align-items:start}
+  .stage{position:relative;padding:0;min-height:330px;overflow:hidden;background:rgba(10,15,31,.72);border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.12)}
+  .stage::after{content:'›';position:absolute;right:-12px;top:31px;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:#0b1224;border:1px solid rgba(34,211,238,.24);color:var(--cyan);font-size:18px;z-index:3}
+  .stage:last-child::after{display:none}
+  .stage-head{min-height:72px;margin:0;padding:15px 16px;border-bottom:1px solid var(--line);align-items:flex-start;background:rgba(255,255,255,.018)}
+  .stage-name{align-items:flex-start;line-height:1.25}.stage-name-wrap{display:flex;flex-direction:column;gap:4px}.stage-name-wrap small{font-size:9px;color:var(--muted);font-weight:400;max-width:160px}
+  .stage-count{min-width:29px;height:29px;display:grid;place-items:center;padding:0;font-weight:800}
+  .stage-body{padding:12px;min-height:250px}
+  .stage[data-stage='a_testar']{border-top:3px solid #60A5FA}.stage[data-stage='em_teste']{border-top:3px solid #F59E0B}.stage[data-stage='aprovado']{border-top:3px solid #34D399}.stage[data-stage='descartado']{border-top:3px solid #FB7185}
+  .stage[data-stage='a_testar'] .stage-count{color:#93C5FD;background:rgba(96,165,250,.12)}.stage[data-stage='em_teste'] .stage-count{color:#FCD34D;background:rgba(245,158,11,.12)}.stage[data-stage='aprovado'] .stage-count{color:#6EE7B7;background:rgba(52,211,153,.12)}.stage[data-stage='descartado'] .stage-count{color:#FDA4AF;background:rgba(251,113,133,.12)}
+  .card{padding:12px;background:linear-gradient(145deg,rgba(255,255,255,.042),rgba(255,255,255,.018));transition:.18s ease}.card:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.28);box-shadow:0 10px 26px rgba(0,0,0,.18)}
+  .history-table tbody tr{cursor:pointer;transition:.16s ease}.history-table tbody tr:hover{background:rgba(34,211,238,.055)}.history-open{font-size:10px;color:var(--cyan);white-space:nowrap}.history-product-name{font-weight:600}.history-product-sub{font-size:9px;color:var(--muted);margin-top:3px}
+  .analysis-modal-box{max-width:720px;max-height:88vh;overflow:auto}.analysis-modal-head{display:flex;gap:14px;align-items:center;margin-bottom:18px}.analysis-modal-thumb{width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--surface-raised);display:grid;place-items:center;font-size:24px;flex-shrink:0}.analysis-modal-head h3{margin:0 0 5px}.analysis-modal-head p{margin:0}.analysis-modal-score{margin-left:auto;min-width:76px;text-align:center;padding:10px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2)}.analysis-modal-score strong{display:block;font-size:25px;color:var(--cyan)}.analysis-modal-score small{font-size:8px;color:var(--muted);text-transform:uppercase}
+  .analysis-detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}.analysis-detail-item{padding:11px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.022)}.analysis-detail-item small{display:block;font-size:8px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}.analysis-detail-item strong{font-size:12px}
+  .analysis-section{padding:14px;border:1px solid var(--line);border-radius:11px;margin-top:10px;background:rgba(255,255,255,.018)}.analysis-section h4{font-size:11px;color:var(--cyan);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}.analysis-section p,.analysis-section li{font-size:12px;color:var(--muted);line-height:1.6}.analysis-section ol{padding-left:18px}.analysis-status{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:9px;font-weight:800}
+  @media(max-width:900px){.pipeline-intro{align-items:flex-start;flex-direction:column}.pipeline-legend{justify-content:flex-start}.analysis-detail-grid{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -1164,35 +1186,39 @@
       </table>
     </div>
 
-    <div class="section-label" id="section-pipeline">Pipeline de teste</div>
+    <div class="section-label" id="section-pipeline">Esteira de testes</div>
+    <div class="pipeline-intro">
+      <div class="pipeline-intro-copy"><strong>Um caminho simples para cada produto</strong><span>O produto entra na fila, passa pela mini-live e termina aprovado ou descartado. Cada coluna representa uma única decisão.</span></div>
+      <div class="pipeline-legend"><span>1 · Selecionar</span><span>2 · Validar ao vivo</span><span>3 · Escalar ou encerrar</span></div>
+    </div>
     <div class="pipeline">
-      <div class="stage">
+      <div class="stage" data-stage="a_testar">
         <div class="stage-head">
-          <div class="stage-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9" opacity="0.4"/></svg>A testar</div>
+          <div class="stage-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9" opacity="0.4"/></svg><div class="stage-name-wrap">A testar<small>Produtos aprovados pelo pré-teste</small></div></div>
           <div class="stage-count mono" id="count-a_testar">0</div>
         </div>
-        <div id="stage-a_testar"></div>
+        <div class="stage-body" id="stage-a_testar"></div>
       </div>
-      <div class="stage">
+      <div class="stage" data-stage="em_teste">
         <div class="stage-head">
-          <div class="stage-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>Em mini-live</div>
+          <div class="stage-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><div class="stage-name-wrap">Em mini-live<small>Teste real acontecendo agora</small></div></div>
           <div class="stage-count mono" id="count-em_teste">0</div>
         </div>
-        <div id="stage-em_teste"></div>
+        <div class="stage-body" id="stage-em_teste"></div>
       </div>
-      <div class="stage">
+      <div class="stage" data-stage="aprovado">
         <div class="stage-head">
-          <div class="stage-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Aprovados</div>
+          <div class="stage-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div class="stage-name-wrap">Aprovados<small>Produtos prontos para escalar</small></div></div>
           <div class="stage-count mono" id="count-aprovado">0</div>
         </div>
-        <div id="stage-aprovado"></div>
+        <div class="stage-body" id="stage-aprovado"></div>
       </div>
-      <div class="stage">
+      <div class="stage" data-stage="descartado">
         <div class="stage-head">
-          <div class="stage-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Descartados</div>
+          <div class="stage-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg><div class="stage-name-wrap">Descartados<small>Aprendizados que evitam novos erros</small></div></div>
           <div class="stage-count mono" id="count-descartado">0</div>
         </div>
-        <div id="stage-descartado"></div>
+        <div class="stage-body" id="stage-descartado"></div>
       </div>
     </div>
 
@@ -1287,6 +1313,24 @@
   </div>
 </div>
 
+
+
+<!-- ANALYSIS HISTORY MODAL -->
+<div class="modal-overlay" id="analysis-history-modal">
+  <div class="modal-box analysis-modal-box">
+    <div class="analysis-modal-head">
+      <div class="analysis-modal-thumb" id="analysis-modal-thumb">📦</div>
+      <div><h3 id="analysis-modal-title">Resultado da análise</h3><p id="analysis-modal-date">Análise salva no histórico</p></div>
+      <div class="analysis-modal-score"><strong id="analysis-modal-score">—</strong><small>Índice Scout</small></div>
+    </div>
+    <div class="analysis-detail-grid" id="analysis-modal-grid"></div>
+    <div class="analysis-section"><h4>Decisão da Scout</h4><div id="analysis-modal-verdict"></div></div>
+    <div class="analysis-section"><h4>Por que recebeu essa nota</h4><p id="analysis-modal-reasoning">—</p></div>
+    <div class="analysis-section"><h4>Plano recomendado</h4><ol id="analysis-modal-plan"></ol></div>
+    <div class="analysis-section" id="analysis-modal-result-box"><h4>Resultado real registrado</h4><p id="analysis-modal-result">Ainda não informado.</p></div>
+    <button class="btn-primary" style="width:100%;margin-top:14px" onclick="document.getElementById('analysis-history-modal').classList.remove('open')">Fechar análise</button>
+  </div>
+</div>
 
 <!-- OUTCOME MODAL -->
 <div class="modal-overlay" id="outcome-modal">
@@ -1880,6 +1924,38 @@
     refreshInsight();
   }
 
+
+  function openAnalysisHistory(id) {
+    const p = products.find(item => String(item.id) === String(id));
+    if (!p) return;
+    const tier = priorityTier(Number(p.score) || 0);
+    const date = p.created_at ? new Date(p.created_at).toLocaleString('pt-BR') : 'Data não disponível';
+    const stageLabels = { a_testar:'A testar', em_teste:'Em mini-live', aprovado:'Aprovado', descartado:'Descartado' };
+    const thumb = document.getElementById('analysis-modal-thumb');
+    thumb.innerHTML = p.thumbnail ? `<img src="${p.thumbnail}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px">` : '📦';
+    document.getElementById('analysis-modal-title').textContent = p.name || 'Produto sem nome';
+    document.getElementById('analysis-modal-date').textContent = 'Analisado em ' + date;
+    document.getElementById('analysis-modal-score').textContent = p.score ?? '—';
+    document.getElementById('analysis-modal-grid').innerHTML = `
+      <div class="analysis-detail-item"><small>Prioridade</small><strong>${tier.tag}</strong></div>
+      <div class="analysis-detail-item"><small>Etapa atual</small><strong>${stageLabels[p.stage] || p.stage || '—'}</strong></div>
+      <div class="analysis-detail-item"><small>Comissão</small><strong>${Number(p.commission || 0).toFixed(1)}%</strong></div>
+      <div class="analysis-detail-item"><small>Avaliação</small><strong>★ ${Number(p.rating || 0).toFixed(1)}</strong></div>
+      <div class="analysis-detail-item"><small>Facilidade de demonstrar</small><strong>${p.demo_ease || '—'} / 5</strong></div>
+      <div class="analysis-detail-item"><small>Potencial viral</small><strong>${p.viral_potential || '—'} / 5</strong></div>
+      <div class="analysis-detail-item"><small>Relação vendas/concorrência</small><strong>${Number(p.ratio || 0).toFixed(1)}</strong></div>
+      <div class="analysis-detail-item"><small>Resultado</small><strong>${p.outcome === true ? 'Vendeu' : p.outcome === false ? 'Não vendeu' : 'Pendente'}</strong></div>`;
+    const verdictClass = tier.level === 'high' ? 'pretest-good' : tier.level === 'mid' ? 'pretest-warn' : 'pretest-bad';
+    const verdictText = tier.level === 'high' ? 'TESTAR AGORA' : tier.level === 'mid' ? 'TESTAR COM CAUTELA' : 'NÃO PRIORIZAR';
+    document.getElementById('analysis-modal-verdict').innerHTML = `<span class="analysis-status ${verdictClass}">${verdictText}</span>`;
+    document.getElementById('analysis-modal-reasoning').textContent = p.reasoning || p.viral_reasoning || 'Não há justificativa salva para esta análise.';
+    let plan = [];
+    try { plan = JSON.parse(p.action_plan || '[]'); } catch (_) { plan = []; }
+    document.getElementById('analysis-modal-plan').innerHTML = plan.length ? plan.map(item => `<li>${item}</li>`).join('') : '<li>Nenhum plano salvo.</li>';
+    document.getElementById('analysis-modal-result').textContent = p.outcome === true ? ('Produto aprovado. ' + (p.user_note || 'Resultado positivo registrado.')) : p.outcome === false ? ('Produto descartado. ' + (p.user_note || 'Resultado negativo registrado.')) : 'O produto ainda não concluiu a mini-live.';
+    document.getElementById('analysis-history-modal').classList.add('open');
+  }
+
   // ---------------- HISTORY TABLE ----------------
   function renderHistory() {
     const body = document.getElementById('history-body');
@@ -1896,13 +1972,13 @@
       const thumb = p.thumbnail
         ? `<img src="${p.thumbnail}" style="width:32px;height:32px;object-fit:cover;border-radius:6px;">`
         : `<div style="width:32px;height:32px;border-radius:6px;background:var(--surface-raised);display:flex;align-items:center;justify-content:center;">📦</div>`;
-      return `<tr>
+      return `<tr onclick="openAnalysisHistory('${p.id}')" title="Clique para abrir a análise completa">
         <td>${thumb}</td>
-        <td>${p.name}</td>
+        <td><div class="history-product-name">${p.name}</div><div class="history-product-sub">Clique para ver o diagnóstico salvo</div></td>
         <td><span class="history-tag" style="color:${tagColor}; background:${tagBg};">${tier.tag}</span></td>
         <td>${p.score}</td>
         <td style="color:var(--muted);">${date}</td>
-        <td><button class="card-del" onclick="deleteProduct('${p.id}')" title="Excluir">✕</button></td>
+        <td><span class="history-open">Ver análise →</span> <button class="card-del" onclick="event.stopPropagation();deleteProduct('${p.id}')" title="Excluir">✕</button></td>
       </tr>`;
     }).join('');
   }
