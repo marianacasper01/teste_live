@@ -1275,6 +1275,511 @@
     }
   }
 
+
+  /* =========================================================
+     DASHBOARD INTELIGENTE SCOUT LIVE
+     ========================================================= */
+  .scout-dashboard {
+    padding: 30px 32px 60px;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  .dash-hero {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(290px, .65fr);
+    gap: 24px;
+    min-height: 270px;
+    padding: 30px;
+    border: 1px solid rgba(34,211,238,.24);
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at 82% 16%, rgba(34,211,238,.20), transparent 31%),
+      radial-gradient(circle at 18% 120%, rgba(139,92,246,.16), transparent 42%),
+      linear-gradient(145deg, rgba(10,18,40,.98), rgba(5,9,25,.99));
+    box-shadow: 0 24px 70px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.025);
+  }
+
+  .dash-hero::after {
+    content:'';
+    position:absolute;
+    width:360px;
+    height:360px;
+    border-radius:50%;
+    right:-155px;
+    bottom:-220px;
+    border:1px solid rgba(34,211,238,.18);
+    box-shadow:0 0 0 38px rgba(34,211,238,.025), 0 0 0 78px rgba(34,211,238,.018);
+    pointer-events:none;
+  }
+
+  .dash-ai-badge {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    width:max-content;
+    padding:8px 12px;
+    border:1px solid rgba(34,211,238,.25);
+    border-radius:999px;
+    color:#67E8F9;
+    background:rgba(34,211,238,.08);
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    margin-bottom:18px;
+  }
+
+  .dash-ai-badge i {
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#34D399;
+    box-shadow:0 0 14px rgba(52,211,153,.9);
+    animation:dashPulse 1.7s infinite;
+  }
+
+  @keyframes dashPulse { 50% { opacity:.35; transform:scale(.72); } }
+
+  .dash-hero-copy { position:relative; z-index:2; }
+  .dash-hero-copy h1 {
+    max-width:760px;
+    font-size:clamp(30px,3.2vw,48px);
+    line-height:1.08;
+    letter-spacing:-.035em;
+    margin-bottom:14px;
+  }
+  .dash-hero-copy h1 span {
+    background:linear-gradient(90deg,#67E8F9,#22D3EE,#A78BFA);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .dash-hero-copy p {
+    max-width:680px;
+    color:#91A0B5;
+    font-size:14px;
+    line-height:1.7;
+  }
+
+  .dash-hero-actions {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:24px;
+  }
+
+  .dash-action-primary,
+  .dash-action-secondary {
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:0 16px;
+    border-radius:11px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.18s ease;
+  }
+
+  .dash-action-primary {
+    border:none;
+    color:#04141A;
+    background:linear-gradient(135deg,#67E8F9,#0891B2);
+    box-shadow:0 8px 24px rgba(34,211,238,.17);
+  }
+  .dash-action-secondary {
+    color:var(--text);
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.09);
+  }
+  .dash-action-primary:hover,
+  .dash-action-secondary:hover { transform:translateY(-2px); }
+
+  .dash-ai-panel {
+    position:relative;
+    z-index:2;
+    align-self:stretch;
+    padding:20px;
+    border-radius:18px;
+    border:1px solid rgba(103,232,249,.18);
+    background:rgba(4,10,27,.62);
+    backdrop-filter:blur(12px);
+  }
+  .dash-ai-panel-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .dash-ai-panel-head span {
+    font-size:10px;
+    font-weight:800;
+    color:#67E8F9;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+  .dash-ai-panel-head small { color:var(--muted); font-size:9px; }
+  .dash-ai-insight {
+    font-size:15px;
+    line-height:1.55;
+    font-weight:650;
+    margin-bottom:18px;
+  }
+  .dash-ai-list { display:flex; flex-direction:column; gap:9px; }
+  .dash-ai-list div {
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+    color:var(--muted);
+    font-size:11px;
+    line-height:1.45;
+  }
+  .dash-ai-list b { color:#67E8F9; }
+
+  .dash-section-head {
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    margin:28px 0 14px;
+  }
+  .dash-section-head h2 { font-size:17px; margin-bottom:4px; }
+  .dash-section-head p { color:var(--muted); font-size:11px; }
+  .dash-section-head button {
+    border:none;
+    background:none;
+    color:#67E8F9;
+    font-size:11px;
+    cursor:pointer;
+  }
+
+  .dash-metrics {
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:13px;
+  }
+  .dash-metric {
+    position:relative;
+    overflow:hidden;
+    min-height:132px;
+    padding:17px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:linear-gradient(150deg,rgba(15,23,42,.95),rgba(7,11,27,.99));
+  }
+  .dash-metric::after {
+    content:'';
+    position:absolute;
+    width:95px;
+    height:95px;
+    border-radius:50%;
+    right:-34px;
+    top:-38px;
+    opacity:.13;
+    filter:blur(2px);
+    background:var(--metric-color,#22D3EE);
+  }
+  .dash-metric-icon {
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    border-radius:10px;
+    background:color-mix(in srgb, var(--metric-color,#22D3EE) 12%, transparent);
+    color:var(--metric-color,#22D3EE);
+    border:1px solid color-mix(in srgb, var(--metric-color,#22D3EE) 24%, transparent);
+    margin-bottom:14px;
+    font-size:15px;
+  }
+  .dash-metric-label {
+    color:var(--muted);
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+  }
+  .dash-metric-value {
+    display:block;
+    margin-top:7px;
+    font-size:25px;
+    line-height:1;
+    font-weight:850;
+    color:var(--metric-color,#67E8F9);
+  }
+  .dash-metric-sub {
+    margin-top:8px;
+    color:var(--muted-dim);
+    font-size:9px;
+    line-height:1.35;
+  }
+
+  .dash-main-grid {
+    display:grid;
+    grid-template-columns:minmax(0,1.25fr) minmax(310px,.75fr);
+    gap:16px;
+  }
+  .dash-card-box {
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:linear-gradient(155deg,rgba(13,20,42,.96),rgba(6,10,25,.99));
+    padding:20px;
+  }
+  .dash-card-head {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .dash-card-head h3 { font-size:15px; margin-bottom:4px; }
+  .dash-card-head p { color:var(--muted); font-size:10px; }
+  .dash-card-head .live-dot {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:#6EE7B7;
+    font-size:9px;
+    padding:5px 8px;
+    border:1px solid rgba(52,211,153,.18);
+    background:rgba(52,211,153,.06);
+    border-radius:999px;
+  }
+  .dash-card-head .live-dot::before {
+    content:'';
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#34D399;
+    box-shadow:0 0 10px rgba(52,211,153,.8);
+  }
+
+  .dash-pipeline {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:9px;
+  }
+  .dash-pipe-stage {
+    position:relative;
+    min-height:130px;
+    padding:14px;
+    border-radius:13px;
+    border:1px solid rgba(255,255,255,.065);
+    background:rgba(255,255,255,.025);
+  }
+  .dash-pipe-stage:not(:last-child)::after {
+    content:'›';
+    position:absolute;
+    right:-9px;
+    top:50%;
+    transform:translateY(-50%);
+    width:18px;
+    height:18px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:#0B1022;
+    border:1px solid var(--line);
+    color:var(--cyan);
+    z-index:2;
+  }
+  .dash-pipe-number {
+    width:27px;
+    height:27px;
+    border-radius:9px;
+    display:grid;
+    place-items:center;
+    background:rgba(34,211,238,.09);
+    color:#67E8F9;
+    font-weight:800;
+    font-size:11px;
+    margin-bottom:13px;
+  }
+  .dash-pipe-stage small {
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  .dash-pipe-stage strong {
+    display:block;
+    margin-top:7px;
+    font-size:24px;
+  }
+  .dash-pipe-stage span {
+    display:block;
+    color:var(--muted-dim);
+    font-size:9px;
+    margin-top:7px;
+  }
+
+  .dash-activity-list {
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+  .dash-activity-item {
+    display:grid;
+    grid-template-columns:34px minmax(0,1fr) auto;
+    gap:10px;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,.055);
+  }
+  .dash-activity-item:last-child { border-bottom:none; }
+  .dash-activity-icon {
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    display:grid;
+    place-items:center;
+    background:rgba(34,211,238,.08);
+    color:#67E8F9;
+    font-size:13px;
+  }
+  .dash-activity-copy strong {
+    display:block;
+    font-size:11px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .dash-activity-copy small {
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    margin-top:3px;
+  }
+  .dash-activity-score {
+    font-size:10px;
+    font-weight:800;
+    padding:5px 7px;
+    border-radius:8px;
+    color:#67E8F9;
+    background:rgba(34,211,238,.08);
+  }
+
+  .dash-bottom-grid {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(320px,.7fr);
+    gap:16px;
+  }
+
+  .dash-quick-actions {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  .dash-quick {
+    min-height:112px;
+    text-align:left;
+    padding:15px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:rgba(255,255,255,.025);
+    color:var(--text);
+    cursor:pointer;
+    transition:.17s ease;
+  }
+  .dash-quick:hover {
+    border-color:rgba(34,211,238,.4);
+    background:rgba(34,211,238,.05);
+    transform:translateY(-2px);
+  }
+  .dash-quick i {
+    width:32px;
+    height:32px;
+    border-radius:9px;
+    display:grid;
+    place-items:center;
+    background:rgba(34,211,238,.09);
+    color:#67E8F9;
+    font-style:normal;
+    margin-bottom:12px;
+  }
+  .dash-quick strong { display:block; font-size:11px; }
+  .dash-quick span {
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    line-height:1.4;
+    margin-top:5px;
+  }
+
+  .dash-ranking { display:flex; flex-direction:column; gap:9px; }
+  .dash-rank-item {
+    display:grid;
+    grid-template-columns:28px 1fr auto;
+    gap:9px;
+    align-items:center;
+    padding:9px 10px;
+    border:1px solid rgba(255,255,255,.055);
+    border-radius:11px;
+    background:rgba(255,255,255,.02);
+  }
+  .dash-rank-position {
+    font-size:13px;
+    font-weight:850;
+    color:#FCD34D;
+  }
+  .dash-rank-name {
+    font-size:10px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .dash-rank-score {
+    color:#67E8F9;
+    font-weight:850;
+    font-size:11px;
+  }
+
+  .dash-empty-state {
+    min-height:150px;
+    display:grid;
+    place-items:center;
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+    border:1px dashed rgba(255,255,255,.08);
+    border-radius:12px;
+  }
+
+  @media(max-width:1180px) {
+    .dash-metrics { grid-template-columns:repeat(3,1fr); }
+    .dash-main-grid,
+    .dash-bottom-grid { grid-template-columns:1fr; }
+  }
+
+  @media(max-width:1000px) {
+    .scout-dashboard { padding:22px 20px 50px; }
+    .dash-hero { grid-template-columns:1fr; }
+  }
+
+  @media(max-width:700px) {
+    .scout-dashboard { padding:18px 14px 40px; }
+    .dash-hero { padding:20px; border-radius:18px; }
+    .dash-hero-copy h1 { font-size:29px; }
+    .dash-hero-actions { flex-direction:column; }
+    .dash-action-primary,.dash-action-secondary { width:100%; }
+    .dash-metrics { grid-template-columns:1fr 1fr; }
+    .dash-pipeline { grid-template-columns:1fr 1fr; }
+    .dash-pipe-stage:nth-child(2)::after { display:none; }
+    .dash-quick-actions { grid-template-columns:1fr 1fr; }
+  }
+
+  @media(max-width:420px) {
+    .dash-metrics { grid-template-columns:1fr; }
+    .dash-pipeline { grid-template-columns:1fr; }
+    .dash-pipe-stage::after { display:none !important; }
+    .dash-quick-actions { grid-template-columns:1fr; }
+  }
+
 </style>
 </head>
 <body>
@@ -1367,36 +1872,148 @@
     </div>
 
     <section class="tab-page active" id="tab-dashboard">
-      <div class="page-intro">
-        <div class="eyebrow">Central Scout Live</div>
-        <h1>Seu cérebro estratégico para <span class="cyan-text">vender em live.</span></h1>
-        <p>Escolha uma área abaixo. Cada função funciona como um módulo separado, sem rolagem automática entre as partes da plataforma.</p>
-      </div>
-      <div class="dashboard-grid">
-        <article class="dashboard-card" onclick="openTab('tab-finance')">
-          <div class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 3 5-7"/></svg></div>
-          <h3>Controle Financeiro</h3>
-          <p>Cadastre contas, registre GMV e comissões diariamente e acompanhe seus totais em um calendário.</p>
-          <span class="d-link">Abrir módulo →</span>
-        </article>
-        <article class="dashboard-card" onclick="openTab('tab-product-tests')">
-          <div class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6l1 3h3v15H5V6h3l1-3Z"/><path d="M9 12h6M9 16h4"/></svg></div>
-          <h3>Testes de Produto</h3>
-          <p>Analise prints, calcule prioridade, organize o pipeline e registre os resultados reais das suas lives.</p>
-          <span class="d-link">Abrir módulo →</span>
-        </article>
-        <article class="dashboard-card" onclick="openTab('tab-script-generator')">
-          <div class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></div>
-          <h3>Geração de Roteiro</h3>
-          <p>Área reservada para criar roteiros estratégicos com base no produto, público, benefícios e dinâmica da live.</p>
-          <span class="d-link">Abrir módulo →</span>
-        </article>
-        <article class="dashboard-card" onclick="openTab('tab-hot-products')">
-          <div class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c4 0 7-3 7-7 0-5-4-7-4-12-4 2-8 6-8 12 0 4 2 7 5 7Z"/></svg></div>
-          <h3>Produtos Mais Quentes</h3>
-          <p>Área reservada para visualizar tendências, oportunidades e produtos com maior potencial no momento.</p>
-          <span class="d-link">Abrir módulo →</span>
-        </article>
+      <div class="scout-dashboard">
+
+        <section class="dash-hero">
+          <div class="dash-hero-copy">
+            <div class="dash-ai-badge"><i></i> Scout AI operando</div>
+            <h1 id="dash-greeting">Seu centro de comando para <span>vender melhor em live.</span></h1>
+            <p>Veja o que merece sua atenção hoje, acompanhe a evolução dos testes e tome decisões com base no histórico real da sua operação.</p>
+            <div class="dash-hero-actions">
+              <button class="dash-action-primary" onclick="openTab('tab-product-tests')">＋ Analisar novo produto</button>
+              <button class="dash-action-secondary" onclick="openTab('tab-hot-products')">🔥 Ver oportunidades</button>
+              <button class="dash-action-secondary" onclick="openTab('tab-finance')">💰 Abrir financeiro</button>
+            </div>
+          </div>
+
+          <aside class="dash-ai-panel">
+            <div class="dash-ai-panel-head">
+              <span>Diagnóstico Scout</span>
+              <small id="dash-ai-time">atualizado agora</small>
+            </div>
+            <div class="dash-ai-insight" id="dash-ai-insight">Carregando o diagnóstico da sua operação...</div>
+            <div class="dash-ai-list">
+              <div><b>01</b><span id="dash-ai-line-1">Analisando produtos e resultados registrados.</span></div>
+              <div><b>02</b><span id="dash-ai-line-2">Calculando sua taxa atual de acerto.</span></div>
+              <div><b>03</b><span id="dash-ai-line-3">Organizando sua próxima ação recomendada.</span></div>
+            </div>
+          </aside>
+        </section>
+
+        <div class="dash-section-head">
+          <div><h2>Visão geral</h2><p>Os números mais importantes da sua operação neste momento.</p></div>
+        </div>
+
+        <section class="dash-metrics">
+          <article class="dash-metric" style="--metric-color:#67E8F9">
+            <div class="dash-metric-icon">⌁</div>
+            <span class="dash-metric-label">Produtos analisados</span>
+            <strong class="dash-metric-value" id="dash-total-products">0</strong>
+            <div class="dash-metric-sub" id="dash-products-sub">Sua base de inteligência</div>
+          </article>
+          <article class="dash-metric" style="--metric-color:#6EE7B7">
+            <div class="dash-metric-icon">✓</div>
+            <span class="dash-metric-label">Taxa de acerto</span>
+            <strong class="dash-metric-value" id="dash-hit-rate">—</strong>
+            <div class="dash-metric-sub" id="dash-hit-sub">Aguardando resultados reais</div>
+          </article>
+          <article class="dash-metric" style="--metric-color:#C4B5FD">
+            <div class="dash-metric-icon">⚡</div>
+            <span class="dash-metric-label">Aprovados</span>
+            <strong class="dash-metric-value" id="dash-approved">0</strong>
+            <div class="dash-metric-sub">Produtos validados em live</div>
+          </article>
+          <article class="dash-metric" style="--metric-color:#FCD34D">
+            <div class="dash-metric-icon">◉</div>
+            <span class="dash-metric-label">Em teste</span>
+            <strong class="dash-metric-value" id="dash-testing">0</strong>
+            <div class="dash-metric-sub">Produtos rodando na esteira</div>
+          </article>
+          <article class="dash-metric" style="--metric-color:#F9A8D4">
+            <div class="dash-metric-icon">R$</div>
+            <span class="dash-metric-label">Comissões do mês</span>
+            <strong class="dash-metric-value" id="dash-commission">R$ 0</strong>
+            <div class="dash-metric-sub" id="dash-commission-sub">Somando todas as contas</div>
+          </article>
+        </section>
+
+        <div class="dash-section-head">
+          <div><h2>Operação em movimento</h2><p>Acompanhe a esteira de testes e as últimas decisões da Scout.</p></div>
+          <button onclick="openTab('tab-product-tests')">Abrir pipeline completo →</button>
+        </div>
+
+        <section class="dash-main-grid">
+          <article class="dash-card-box">
+            <div class="dash-card-head">
+              <div><h3>Pipeline de validação</h3><p>Do primeiro diagnóstico até o resultado real.</p></div>
+              <span class="live-dot">Atualizado</span>
+            </div>
+            <div class="dash-pipeline">
+              <div class="dash-pipe-stage">
+                <div class="dash-pipe-number">01</div>
+                <small>A testar</small>
+                <strong id="dash-stage-test">0</strong>
+                <span>Aguardando mini-live</span>
+              </div>
+              <div class="dash-pipe-stage">
+                <div class="dash-pipe-number">02</div>
+                <small>Em teste</small>
+                <strong id="dash-stage-live">0</strong>
+                <span>Validação em andamento</span>
+              </div>
+              <div class="dash-pipe-stage">
+                <div class="dash-pipe-number">03</div>
+                <small>Aprovados</small>
+                <strong id="dash-stage-approved">0</strong>
+                <span>Produtos que venderam</span>
+              </div>
+              <div class="dash-pipe-stage">
+                <div class="dash-pipe-number">04</div>
+                <small>Descartados</small>
+                <strong id="dash-stage-discarded">0</strong>
+                <span>Aprendizado registrado</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="dash-card-box">
+            <div class="dash-card-head">
+              <div><h3>Atividade recente</h3><p>Últimas análises e resultados registrados.</p></div>
+            </div>
+            <div class="dash-activity-list" id="dash-activity-list">
+              <div class="dash-empty-state">Nenhuma atividade registrada ainda.</div>
+            </div>
+          </article>
+        </section>
+
+        <div class="dash-section-head">
+          <div><h2>Ações e oportunidades</h2><p>Acesso rápido aos principais módulos da Scout Live.</p></div>
+        </div>
+
+        <section class="dash-bottom-grid">
+          <article class="dash-card-box">
+            <div class="dash-card-head">
+              <div><h3>Ações rápidas</h3><p>Continue sua operação sem perder tempo.</p></div>
+            </div>
+            <div class="dash-quick-actions">
+              <button class="dash-quick" onclick="openTab('tab-product-tests')"><i>＋</i><strong>Novo produto</strong><span>Envie prints e gere uma análise completa.</span></button>
+              <button class="dash-quick" onclick="openTab('tab-hot-products')"><i>🔥</i><strong>Radar de produtos</strong><span>Encontre oportunidades para testar.</span></button>
+              <button class="dash-quick" onclick="openTab('tab-script-generator')"><i>✎</i><strong>Criar roteiro</strong><span>Prepare a comunicação da próxima live.</span></button>
+              <button class="dash-quick" onclick="openTab('tab-finance')"><i>↗</i><strong>Registrar resultado</strong><span>Atualize GMV, comissão e metas.</span></button>
+            </div>
+          </article>
+
+          <article class="dash-card-box">
+            <div class="dash-card-head">
+              <div><h3>Melhores oportunidades</h3><p>Ranking baseado na nota Scout.</p></div>
+              <button onclick="openTab('tab-product-tests')" style="border:none;background:none;color:var(--cyan);font-size:10px;cursor:pointer">Ver todos</button>
+            </div>
+            <div class="dash-ranking" id="dash-ranking">
+              <div class="dash-empty-state">Analise produtos para montar seu ranking.</div>
+            </div>
+          </article>
+        </section>
+
       </div>
     </section>
 
@@ -1887,6 +2504,7 @@
     renderHistory();
     refreshInsight();
     loadFinanceData();
+    renderDashboard();
   }
 
   // ---------------- DATA LOADING ----------------
@@ -2353,6 +2971,7 @@
     await supa.from('scout_products').update({ stage: 'em_teste' }).eq('id', id);
     products = products.map(p => p.id === id ? { ...p, stage: 'em_teste' } : p);
     renderBoard();
+    renderDashboard();
   }
 
   function openOutcome(id) {
@@ -2388,6 +3007,7 @@
     updateAccuracy();
     renderHistory();
     refreshInsight();
+    renderDashboard();
   }
 
 
@@ -2492,6 +3112,123 @@
   }
 
 
+
+  function renderDashboard() {
+    const safeProducts = Array.isArray(products) ? products : [];
+    const concluded = safeProducts.filter(p => p.outcome !== null && p.outcome !== undefined);
+    const hits = concluded.filter(p => p.outcome === true).length;
+    const hitRate = concluded.length ? Math.round((hits / concluded.length) * 100) : 0;
+
+    const byStage = stage => safeProducts.filter(p => p.stage === stage).length;
+    const approved = byStage('aprovado');
+    const testing = byStage('em_teste');
+    const waiting = byStage('a_testar');
+    const discarded = byStage('descartado');
+
+    const now = new Date();
+    const monthEntries = (Array.isArray(financeEntries) ? financeEntries : []).filter(e => {
+      const d = new Date(e.date + 'T12:00:00');
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const monthCommission = monthEntries.reduce((sum, e) => sum + Number(e.commission || 0), 0);
+
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    setText('dash-total-products', safeProducts.length);
+    setText('dash-products-sub', safeProducts.length ? `${concluded.length} já têm resultado real` : 'Sua base começa no primeiro teste');
+    setText('dash-hit-rate', concluded.length ? `${hitRate}%` : '—');
+    setText('dash-hit-sub', concluded.length ? `${hits} acerto(s) em ${concluded.length} teste(s)` : 'Aguardando resultados reais');
+    setText('dash-approved', approved);
+    setText('dash-testing', testing);
+    setText('dash-commission', moneyBR(monthCommission));
+    setText('dash-commission-sub', `${monthEntries.length} lançamento(s) neste mês`);
+
+    setText('dash-stage-test', waiting);
+    setText('dash-stage-live', testing);
+    setText('dash-stage-approved', approved);
+    setText('dash-stage-discarded', discarded);
+
+    const emailName = session?.user?.email?.split('@')[0] || '';
+    const name = emailName ? emailName.charAt(0).toUpperCase() + emailName.slice(1) : '';
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
+    const greetingEl = document.getElementById('dash-greeting');
+    if (greetingEl) {
+      greetingEl.innerHTML = `${greeting}${name ? ', ' + escapeHtml(name) : ''}. Sua operação está <span>pronta para avançar.</span>`;
+    }
+
+    let insight = 'Comece analisando um produto para a Scout montar seu primeiro diagnóstico.';
+    let line1 = 'Nenhum produto aguardando análise.';
+    let line2 = 'Sua taxa de acerto aparecerá após os primeiros testes.';
+    let line3 = 'Próxima ação: enviar os prints de um produto.';
+
+    if (safeProducts.length) {
+      const highPriority = safeProducts.filter(p => Number(p.score || 0) >= 7.8 && p.stage === 'a_testar');
+      if (testing > 0) {
+        insight = `Você tem ${testing} produto${testing > 1 ? 's' : ''} em teste. Registre os resultados para a Scout recalibrar as próximas decisões.`;
+      } else if (highPriority.length > 0) {
+        insight = `${highPriority.length} produto${highPriority.length > 1 ? 's estão' : ' está'} com alta prioridade e pronto para mini-live.`;
+      } else if (waiting > 0) {
+        insight = `${waiting} produto${waiting > 1 ? 's aguardam' : ' aguarda'} validação. Priorize o maior score antes de iniciar uma nova análise.`;
+      } else if (concluded.length) {
+        insight = `Sua taxa atual de acerto é ${hitRate}%. A Scout já aprendeu com ${concluded.length} resultado${concluded.length > 1 ? 's' : ''} real${concluded.length > 1 ? 'is' : ''}.`;
+      }
+
+      line1 = `${waiting} aguardando teste e ${testing} em validação.`;
+      line2 = concluded.length ? `${hitRate}% de acerto com base em ${concluded.length} resultado(s).` : 'Ainda faltam resultados para medir a precisão.';
+      line3 = testing ? 'Próxima ação: concluir os testes em andamento.' : waiting ? 'Próxima ação: agendar a mini-live de maior prioridade.' : 'Próxima ação: analisar uma nova oportunidade.';
+    }
+
+    setText('dash-ai-insight', insight);
+    setText('dash-ai-line-1', line1);
+    setText('dash-ai-line-2', line2);
+    setText('dash-ai-line-3', line3);
+
+    const activity = [...safeProducts]
+      .sort((a,b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at))
+      .slice(0,5);
+
+    const activityEl = document.getElementById('dash-activity-list');
+    if (activityEl) {
+      const labels = {
+        a_testar:'Análise concluída',
+        em_teste:'Produto entrou em teste',
+        aprovado:'Produto aprovado',
+        descartado:'Produto descartado'
+      };
+      const icons = { a_testar:'⌁', em_teste:'◉', aprovado:'✓', descartado:'×' };
+
+      activityEl.innerHTML = activity.length ? activity.map(p => {
+        const date = new Date(p.updated_at || p.created_at);
+        const relative = date.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+        return `<div class="dash-activity-item" onclick="openAnalysisHistory('${p.id}')" style="cursor:pointer">
+          <div class="dash-activity-icon">${icons[p.stage] || '⌁'}</div>
+          <div class="dash-activity-copy">
+            <strong>${escapeHtml(p.name || 'Produto sem nome')}</strong>
+            <small>${labels[p.stage] || 'Produto atualizado'} · ${relative}</small>
+          </div>
+          <span class="dash-activity-score">${Number(p.score || 0).toFixed(1)}</span>
+        </div>`;
+      }).join('') : '<div class="dash-empty-state">Nenhuma atividade registrada ainda.</div>';
+    }
+
+    const rankingEl = document.getElementById('dash-ranking');
+    if (rankingEl) {
+      const ranking = [...safeProducts].sort((a,b) => Number(b.score || 0) - Number(a.score || 0)).slice(0,5);
+      const medals = ['🥇','🥈','🥉','04','05'];
+      rankingEl.innerHTML = ranking.length ? ranking.map((p, index) => `
+        <div class="dash-rank-item" onclick="openAnalysisHistory('${p.id}')" style="cursor:pointer">
+          <span class="dash-rank-position">${medals[index]}</span>
+          <span class="dash-rank-name">${escapeHtml(p.name || 'Produto sem nome')}</span>
+          <span class="dash-rank-score">${Number(p.score || 0).toFixed(1)}</span>
+        </div>`).join('') : '<div class="dash-empty-state">Analise produtos para montar seu ranking.</div>';
+    }
+  }
+
+
   // ---------------- CONTROLE FINANCEIRO ----------------
   function financeStorageKey(type) {
     const uid = session?.user?.id || 'guest';
@@ -2507,6 +3244,7 @@
     if (!financeAccounts.some(a => a.id === selectedFinanceAccount)) selectedFinanceAccount = null;
     showFinanceAccounts();
     renderFinance();
+    renderDashboard();
   }
 
   function persistFinanceData() {
@@ -2983,6 +3721,7 @@
     if (nav) nav.classList.add('active');
     if (tabId === 'tab-finance') { showFinanceAccounts(); renderFinance(); }
     if (tabId === 'tab-hot-products') { renderHotProducts(); }
+    if (tabId === 'tab-dashboard') { renderDashboard(); }
 
     document.querySelector('.main-content')?.scrollTo({ top: 0, behavior: 'instant' });
     window.scrollTo({ top: 0, behavior: 'instant' });
