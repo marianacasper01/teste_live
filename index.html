@@ -1897,6 +1897,7 @@
   .script-segment-nav-item.seg-0 strong{color:#C084FC}.script-segment-nav-item.seg-1 strong{color:#6EE7B7}.script-segment-nav-item.seg-2 strong{color:#38BDF8}.script-segment-nav-item.seg-3 strong{color:#FB923C}.script-segment-nav-item.seg-4 strong{color:#FB7185}
   .script-segment-content{border:1px solid rgba(34,211,238,.2);background:rgba(4,8,26,.58);border-radius:14px;padding:16px 18px;min-height:300px}
   .script-segment-block{padding:13px 14px;border-radius:11px;margin-bottom:10px;border-left:3px solid transparent;font-size:15px;line-height:1.65;color:var(--text)}
+  .script-segment-block-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.script-segment-block-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;opacity:.9}.script-segment-remix{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.035);color:var(--text);border-radius:8px;padding:6px 9px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap}.script-segment-remix:hover{border-color:var(--cyan);color:var(--cyan)}.script-segment-remix:disabled{opacity:.5;cursor:wait}.script-segment-text{white-space:pre-wrap}
   .script-segment-block:last-child{margin-bottom:0}.script-segment-block.seg-0{background:rgba(168,85,247,.07);border-left-color:#A855F7}.script-segment-block.seg-1{background:rgba(52,211,153,.06);border-left-color:#34D399}.script-segment-block.seg-2{background:rgba(56,189,248,.06);border-left-color:#38BDF8}.script-segment-block.seg-3{background:rgba(251,146,60,.06);border-left-color:#FB923C}.script-segment-block.seg-4{background:rgba(251,113,133,.06);border-left-color:#FB7185}
   .script-output{width:100%;min-height:270px;resize:vertical;background:rgba(4,8,26,.72);color:var(--text);border:1px solid rgba(34,211,238,.22);border-radius:14px;padding:18px;font-family:'Inter',sans-serif;font-size:15px;line-height:1.75;outline:none}
   .script-output:focus{border-color:var(--cyan)}
@@ -2450,7 +2451,7 @@
       <div class="page-intro">
         <div class="eyebrow">Scout Conversion Engine</div>
         <h1>Gerador de <span class="cyan-text">Roteiros em Loop</span></h1>
-        <p>Envie quantos prints forem necessários. A Scout analisa todas as informações e cria um único roteiro natural, com duração máxima de 40 segundos, pronto para repetir durante a live.</p>
+        <p>Envie quantos prints forem necessários. A Scout analisa todas as informações e cria um único roteiro natural, com duração máxima de 1 minuto, pronto para repetir durante a live.</p>
       </div>
 
       <div class="script-shell">
@@ -2486,14 +2487,14 @@
                 <button class="tone-chip" type="button" data-tone="descontraido" data-desc="Casual e amigável">😎 Descontraído</button>
                 <button class="tone-chip" type="button" data-tone="raivoso" data-desc="Urgente e impactante">😡 Raivoso</button>
               </div>
-              <button class="btn-primary script-generate-btn" id="script-generate-btn" type="button" onclick="generateScoutScript(false)">✦ Gerar roteiro de até 40 segundos</button>
+              <button class="btn-primary script-generate-btn" id="script-generate-btn" type="button" onclick="generateScoutScript(false)">✦ Gerar roteiro de até 1 minuto</button>
               <div class="script-error" id="script-error"></div>
             </article>
           </div>
 
           <article class="script-result-card">
             <div class="script-card-head">
-              <div><h2>3. Roteiro gerado <span class="cyan-text">(máx. 40 segundos)</span></h2><p>Visualização separada por partes para ficar fácil de acompanhar durante a live.</p></div>
+              <div><h2>3. Roteiro gerado <span class="cyan-text">(máx. 1 minuto)</span></h2><p>Visualização separada por partes para ficar fácil de acompanhar durante a live.</p></div>
             </div>
             <div class="script-result-empty" id="script-result-empty">
               <i>✎</i><strong>Seu roteiro aparecerá aqui</strong><span>Adicione os prints, escolha o tom e clique em gerar.</span>
@@ -2526,7 +2527,7 @@
         <div class="script-mode-panel" id="script-mode-analyzer">
           <div class="analyzer-layout">
             <article class="script-card">
-              <div class="script-card-head"><div><h2>Analisar roteiro</h2><p>Cole um roteiro e confira se ele está adequado para um loop de até 40 segundos.</p></div></div>
+              <div class="script-card-head"><div><h2>Analisar roteiro</h2><p>Cole um roteiro e confira se ele está adequado para um loop de até 1 minuto.</p></div></div>
               <textarea class="script-output analyzer-textarea" id="analyzer-input" placeholder="Cole o roteiro aqui..."></textarea>
               <button class="btn-primary script-generate-btn" id="analyzer-btn" type="button" onclick="analyzeScoutScript()">◎ Analisar roteiro</button>
               <div class="script-error" id="analyzer-error"></div>
@@ -4025,12 +4026,13 @@
 
 <script>
   // ============================================================
-  // GERADOR DE ROTEIROS SCOUT — LOOP DE ATÉ 40 SEGUNDOS
+  // GERADOR DE ROTEIROS SCOUT — LOOP DE ATÉ 1 MINUTO
   // Backend esperado: Supabase Edge Function "scout-script"
   // ============================================================
   let scriptFiles = [];
   let selectedScriptTone = 'natural';
   let lastGeneratedScript = '';
+  let currentScriptSegments = [];
   const SCRIPT_HISTORY_KEY = 'scout_script_history_v1';
 
   const toneLabels = {
@@ -4133,8 +4135,9 @@
   }
 
   function renderScriptSegments(script){
-    const labels=['Abertura','Benefício 1','Benefício 2','Reforço de valor','CTA leve'];
+    const labels=['Abertura','Benefício 1','Benefício 2','Reforço de valor','CTA'];
     const segments=splitScriptSegments(script);
+    currentScriptSegments = segments.slice();
     const nav=document.getElementById('script-segment-nav');
     const content=document.getElementById('script-segment-content');
     if(!nav||!content)return;
@@ -4142,9 +4145,42 @@
     const total=estimateScriptSeconds(script).seconds;
     segments.forEach((text,index)=>{
       const start=Math.round((index/segments.length)*total), end=Math.round(((index+1)/segments.length)*total);
-      const item=document.createElement('div');item.className=`script-segment-nav-item seg-${index}`;item.innerHTML=`<strong>${labels[index]||'Parte '+(index+1)}</strong><span>${start}–${end}s</span>`;nav.appendChild(item);
-      const block=document.createElement('div');block.className=`script-segment-block seg-${index}`;block.textContent=text;content.appendChild(block);
+      const label=labels[index]||'Parte '+(index+1);
+      const item=document.createElement('div');item.className=`script-segment-nav-item seg-${index}`;item.innerHTML=`<strong>${label}</strong><span>${start}–${end}s</span>`;nav.appendChild(item);
+      const block=document.createElement('div');block.className=`script-segment-block seg-${index}`;
+      const head=document.createElement('div');head.className='script-segment-block-head';
+      const title=document.createElement('span');title.className='script-segment-block-title';title.textContent=label;
+      const remix=document.createElement('button');remix.type='button';remix.className='script-segment-remix';remix.textContent='↻ Remixar só esta parte';remix.onclick=()=>remixScriptSegment(index,remix);
+      const body=document.createElement('div');body.className='script-segment-text';body.textContent=text;
+      head.append(title,remix);block.append(head,body);content.appendChild(block);
     });
+  }
+
+  async function remixScriptSegment(index,button){
+    const error=document.getElementById('script-error');
+    error.textContent='';
+    if(!lastGeneratedScript || !currentScriptSegments[index]){ error.textContent='Gere um roteiro antes de remixar uma parte.'; return; }
+    if(!session?.access_token){ error.textContent='Sua sessão expirou. Entre novamente na plataforma.'; return; }
+    const labels=['Abertura','Benefício 1','Benefício 2','Reforço de valor','CTA'];
+    const oldText=button.textContent;button.disabled=true;button.textContent='Remixando...';
+    try{
+      const response=await fetch(`${SUPABASE_URL}/functions/v1/scout-script`,{
+        method:'POST',
+        headers:{'content-type':'application/json','Authorization':`Bearer ${session.access_token}`},
+        body:JSON.stringify({action:'remix_segment',tone:selectedScriptTone,fullScript:lastGeneratedScript,segmentText:currentScriptSegments[index],segmentLabel:labels[index]||`Parte ${index+1}`})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||data.error)throw new Error(data.error||`Falha ao remixar (${response.status})`);
+      const replacement=String(data.segment||'').trim();
+      if(!replacement)throw new Error('A IA não retornou uma nova versão desta parte.');
+      const target=currentScriptSegments[index];
+      const pos=lastGeneratedScript.indexOf(target);
+      if(pos<0)throw new Error('Não foi possível localizar essa parte no roteiro.');
+      const updated=lastGeneratedScript.slice(0,pos)+replacement+lastGeneratedScript.slice(pos+target.length);
+      showScoutScript(updated);
+      saveScriptHistory(updated,selectedScriptTone);
+    }catch(err){error.textContent=err.message.includes('Failed to fetch')?'A função scout-script ainda não está publicada no Supabase.':err.message;}
+    finally{button.disabled=false;button.textContent=oldText;}
   }
 
   function showScoutScript(script){
@@ -4166,7 +4202,7 @@
     lastGeneratedScript=text;
     const {words,seconds}=estimateScriptSeconds(text);
     const el=document.getElementById('script-counter');
-    if(el){ el.textContent=`${words} palavras · ${seconds}s estimados`; el.style.color=seconds>40?'var(--red)':'var(--muted)'; }
+    if(el){ el.textContent=`${words} palavras · ${seconds}s estimados`; el.style.color=seconds>60?'var(--red)':'var(--muted)'; }
   }
 
   async function copyScoutScript(){
