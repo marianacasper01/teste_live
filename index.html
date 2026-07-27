@@ -4888,7 +4888,8 @@
   }
   function addFiles(incoming){const err=$('fullia-error');err.textContent='';const valid=incoming.filter(f=>/^image\/(png|jpeg|webp)$/.test(f.type));files=[...files,...valid].slice(0,10);if(incoming.length+files.length>10)err.textContent='Limite de 10 imagens.';renderPreviews()}
   function renderPreviews(){$('fullia-previews').innerHTML=files.map((f,i)=>`<div class="fullia-preview"><img src="${URL.createObjectURL(f)}"><button type="button" data-i="${i}">×</button></div>`).join('');$('fullia-previews').querySelectorAll('button').forEach(b=>b.onclick=e=>{e.preventDefault();files.splice(Number(b.dataset.i),1);renderPreviews()})}
-  function startProcessing(){const steps=['Lendo todos os prints...','Extraindo medidas, materiais e variações...','Mapeando dores, desejos e objeções...','Criando perguntas simuladas do chat...','Distribuindo histórias, interações e CTAs...','Revisando repetições e afirmações...'];let i=0;$('fullia-processing').classList.add('show');$('fullia-process-bar').style.width='8%';$('fullia-processing-text').textContent=steps[0];clearInterval(processTimer);processTimer=setInterval(()=>{i=Math.min(i+1,steps.length-1);$('fullia-processing-text').textContent=steps[i];$('fullia-process-bar').style.width=(15+i*15)+'%'},900)}
+  function startProcessing(text='Preparando a geração...'){clearInterval(processTimer);$('fullia-processing').classList.add('show');$('fullia-process-bar').style.width='5%';$('fullia-processing-text').textContent=text}
+  function updateProcessing(text,percent){$('fullia-processing-text').textContent=text;$('fullia-process-bar').style.width=Math.max(5,Math.min(98,percent))+'%'}
   function stopProcessing(){clearInterval(processTimer);$('fullia-process-bar').style.width='100%';setTimeout(()=>$('fullia-processing').classList.remove('show'),400)}
   async function getFullIaAccessToken(){
     let {data,error}=await supa.auth.getSession();
@@ -4905,18 +4906,55 @@
     window.session=active;
     return active.access_token;
   }
-  async function generate(remix){const err=$('fullia-error');err.textContent='';if(!files.length&&!lastResult){err.textContent='Envie pelo menos um print do produto.';return}const btn=$('fullia-generate');btn.disabled=true;startProcessing();try{
+  async function callFullIa(token,body){
+    const res=await fetch(`${SUPABASE_URL}/functions/v1/scout-full-ia`,{method:'POST',headers:{'content-type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${token}`},body:JSON.stringify(body)});
+    const raw=await res.text();let data={};try{data=raw?JSON.parse(raw):{}}catch{data={error:raw||'Resposta inválida da função'}}
+    if(!res.ok||data.error){
+      if(res.status===401)throw new Error('Sua sessão foi recusada pelo Supabase. Saia da Scout, entre novamente e tente outra vez.');
+      if(res.status===546||data.code==='WORKER_RESOURCE_LIMIT')throw new Error('A função atingiu o limite de recursos. Tente novamente; agora cada lote é processado separadamente.');
+      throw new Error(data.error||data.message||`Erro na função (HTTP ${res.status})`);
+    }
+    return data;
+  }
+  async function callBatchWithRetry(token,body){let lastError;for(let attempt=1;attempt<=2;attempt++){try{return await callFullIa(token,body)}catch(e){lastError=e;if(attempt<2)await new Promise(r=>setTimeout(r,1200))}}throw lastError}
+  function uniqueLines(lines){const seen=new Set();return lines.filter(line=>{const key=String(line||'').toLocaleLowerCase('pt-BR').replace(/[^a-z0-9áàâãéêíóôõúç ]/gi,'').replace(/\s+/g,' ').trim();if(!key||seen.has(key))return false;seen.add(key);return true})}
+  async function generate(remix){
+    const err=$('fullia-error');err.textContent='';
+    if(!files.length&&!lastResult){err.textContent='Envie pelo menos um print do produto.';return}
+    const btn=$('fullia-generate'),regen=$('fullia-regenerate');btn.disabled=true;if(regen)regen.disabled=true;startProcessing('Preparando imagens e sessão...');
+    try{
       const token=await getFullIaAccessToken();
-      const images=[];for(const f of files)images.push({base64:await toBase64(f),mediaType:f.type});
-      const body={images,productLink:$('fullia-link').value.trim(),lineCount:selectedLines,noUnsupportedClaims:$('fullia-no-fake-claims').checked,liveProfile:getLiveProfile(),remix,previousProduct:lastResult?.product||null};
-      const res=await fetch(`${SUPABASE_URL}/functions/v1/scout-full-ia`,{method:'POST',headers:{'content-type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${token}`},body:JSON.stringify(body)});
-      const raw=await res.text();let data={};try{data=raw?JSON.parse(raw):{}}catch{data={error:raw||'Resposta inválida da função'}}
-      if(!res.ok||data.error){
-        if(res.status===401)throw new Error('Sua sessão foi recusada pelo Supabase. Saia da Scout, entre novamente e tente outra vez.');
-        throw new Error(data.error||`Erro ao gerar roteiro (HTTP ${res.status})`);
+      const profile=getLiveProfile();
+      const noUnsupportedClaims=$('fullia-no-fake-claims').checked;
+      let product=lastResult?.product||null;
+
+      if(files.length&&!remix){
+        updateProcessing('Etapa 1 de 2 · Lendo e extraindo o produto dos prints...',12);
+        const images=[];for(const f of files)images.push({base64:await toBase64(f),mediaType:f.type});
+        const extracted=await callFullIa(token,{action:'extract',images,productLink:$('fullia-link').value.trim()});
+        product=extracted.product;
+        if(!product)throw new Error('A extração terminou sem retornar os dados do produto.');
       }
+      if(!product)throw new Error('Não há produto extraído. Envie os prints novamente.');
+
+      const totalBatches=Math.ceil(selectedLines/100),allLines=[];
+      for(let batchIndex=0;batchIndex<totalBatches;batchIndex++){
+        const batchSize=Math.min(100,selectedLines-batchIndex*100);
+        const progress=25+Math.round((batchIndex/totalBatches)*68);
+        updateProcessing(`Etapa 2 de 2 · Gerando lote ${batchIndex+1} de ${totalBatches} (${batchIndex*100+1}–${batchIndex*100+batchSize})...`,progress);
+        const batch=await callBatchWithRetry(token,{action:'generate_batch',product,totalLines:selectedLines,batchIndex,batchSize,liveProfile:profile,noUnsupportedClaims,recentLines:allLines.slice(-40),remix:!!remix});
+        const received=Array.isArray(batch.lines)?batch.lines:[];
+        if(!received.length)throw new Error(`O lote ${batchIndex+1} não retornou falas.`);
+        allLines.push(...received);
+      }
+
+      const lines=uniqueLines(allLines).slice(0,selectedLines);
+      if(lines.length<Math.floor(selectedLines*.8))throw new Error(`Foram geradas apenas ${lines.length} falas válidas. Tente gerar uma nova versão.`);
+      const data={product,lines,live_profile:profile,requested_line_count:selectedLines,generated_line_count:lines.length,generation_mode:'split_batches'};
+      updateProcessing('Finalizando e organizando o roteiro...',96);
       normalizeAndShow(data);saveHistory(data);
-    }catch(e){err.textContent=e.message||String(e)}finally{btn.disabled=false;stopProcessing()}}
+    }catch(e){err.textContent=e.message||String(e)}finally{btn.disabled=false;if(regen)regen.disabled=false;stopProcessing()}
+  }
   function normalizeAndShow(data){let lines=Array.isArray(data.lines)?data.lines:[];if(!lines.length&&typeof data.script==='string')lines=data.script.split(/\n+/).map(x=>x.replace(/^\s*\d+[.)-]?\s*/, '').trim()).filter(Boolean);lastResult={...data,lines};$('fullia-product-name').textContent=data.product?.name||data.product_name||'Produto analisado';const profile=data.live_profile||getLiveProfile();const profileText=`${profile.audience||'misto'} · ${profile.presenter||'mulher'} · ${(profile.energy||'natural').replace('_',' ')} · ${profile.persuasion||'equilibrada'}`;$('fullia-result-meta').textContent=`${lines.length} falas · ${profileText}`;$('fullia-count').textContent=`${lines.length} falas`;$('fullia-script-raw').value=lines.join('\n');renderFacts(data.product||{});$('fullia-result').classList.remove('hidden');renderLines();$('fullia-result').scrollIntoView({behavior:'smooth',block:'start'})}
   function renderFacts(p){const facts=[['Produto',p.name],['Categoria',p.category],['Descrição',p.description],['Material',p.material],['Medidas',p.dimensions],['Variações',Array.isArray(p.variations)?p.variations.join(', '):p.variations],['Conteúdo do kit',p.package_contents],['Benefícios',Array.isArray(p.benefits)?p.benefits.join(' · '):p.benefits],['Cuidados',p.care],['Entrega',p.delivery],['Garantia',p.warranty]];$('fullia-product-facts').innerHTML=facts.filter(x=>x[1]).map(([k,v])=>`<div class="fullia-fact"><small>${esc(k)}</small><strong>${esc(v)}</strong></div>`).join('')||'<p style="font-size:10px;color:var(--muted)">Os dados extraídos aparecerão aqui.</p>'}
   function lineClass(line){const s=line.toLowerCase();if(/perguntou|pergunta|chat|ana|carla|joão|amiga/.test(s))return'chat';if(/clica|toca|card|link|garante|pedido/.test(s))return'cta';if(/outro dia|eu mesma|aconteceu|lembro|imagina/.test(s))return'story';if(/me conta|quem aqui|escreve|comenta|fala pra mim/.test(s))return'interaction';return''}
